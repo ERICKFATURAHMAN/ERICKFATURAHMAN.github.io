@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- SEO & Open Graph -->
+    <meta property="og:title" content="Erick - UI/UX & Graphic Designer Portfolio">
+    <meta property="og:description" content="Spesialis desain antarmuka dan branding visual. Lihat karya terbaik saya di sini.">
+    <meta property="og:image" content="erik.jpeg">
+    <meta property="og:url" content="https://portofolio-erick.com">
+    
+    <title>Portofolio Desainer Grafis & UI/UX</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Cursor Kustom -->
+    <div class="cursor"></div>
+    <div class="cursor2"></div>
+
+    <!-- Navigasi -->
+    <nav class="navbar">
+        <div class="logo">PORTFOLIO.</div>
+        <ul class="nav-links">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#portfolio">Work</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+        
+        <!-- Music Toggle -->
+        <div class="music-control">
+            <button id="music-btn" class="music-btn">
+                <i class="fas fa-play"></i>
+            </button>
+            <audio id="bg-music" loop>
+                <!-- Ganti 'your-music.mp3' dengan file lagu Anda -->
+                <source src="musek.mp3" type="audio/mp3">
+            </audio>
+        </div>
+
+        <div class="burger">
+            <div class="line1"></div>
+            <div class="line2"></div>
+            <div class="line3"></div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <p class="greeting">Halo, saya Erick</p>
+            <h1 class="headline">Graphic <span class="outline-text">Designer</span> & <br> UI/UX <span class="highlight">Designer</span></h1>
+            <p class="sub-headline">Menciptakan pengalaman digital yang estetis dan fungsional.</p>
+            <div class="hero-buttons">
+                <a href="#portfolio" class="btn-primary">Lihat Karya <i class="fas fa-arrow-right"></i></a>
+                <a href="cv.pdf" class="btn-secondary" download><i class="fas fa-download"></i> Download CV</a>
+            </div>
+        </div>
+        <div class="hero-visual">
+            <!-- Elemen dekoratif abstrak -->
+            <div class="circle"></div>
+            <!-- Foto Profil -->
+            <div class="image-wrapper">
+                <!-- Ganti src dengan foto Anda sendiri (misal: "my-photo.jpg") -->
+                <img src="erik.jpeg" alt="Profile Picture" class="profile-img">
+            </div>
+        </div>
+    </section>
+
+    <!-- Marquee Section -->
+    <div class="marquee-container">
+        <div class="marquee-content">
+            <span>UI DESIGN</span> <span class="dot">•</span>
+            <span>BRANDING</span> <span class="dot">•</span>
+            <span>PROTOTYPING</span> <span class="dot">•</span>
+            <span>WEB DEVELOPMENT</span> <span class="dot">•</span>
+            <span>ILLUSTRATION</span> <span class="dot">•</span>
+            <span>UI DESIGN</span> <span class="dot">•</span>
+            <span>BRANDING</span> <span class="dot">•</span>
+            <span>PROTOTYPING</span> <span class="dot">•</span>
+            <span>WEB DEVELOPMENT</span> <span class="dot">•</span>
+            <span>ILLUSTRATION</span> <span class="dot">•</span>
+        </div>
+    </div>
+
+    <!-- About Section -->
+    <section id="about" class="about">
+        <div class="container">
+            <div class="section-title">
+                <h2>Who I Am</h2>
+                <div class="line"></div>
+            </div>
+            <div class="about-content">
+                <div class="about-text">
+                    <p>Saya adalah seorang desainer multidisiplin yang berfokus pada visual storytelling dan user-centered design. Dengan latar belakang seni grafis dan pemahaman mendalam tentang pola interaksi pengguna, saya menjembatani kesenjangan antara estetika visual dan kegunaan teknis.</p>
+                    
+                    <div class="skills">
+                        <div class="skill-tag">Adobe Photoshop</div>
+                        <div class="skill-tag">Illustrator</div>
+                        <div class="skill-tag">Figma</div>
+                        <div class="skill-tag">Prototyping</div>
+                        <div class="skill-tag">Branding</div>
+                        <div class="skill-tag">HTML/CSS</div>
+                    </div>
+                </div>
+                <div class="stats">
+                    <div class="stat-item">
+                        <h3>3+</h3>
+                        <p>Tahun Pengalaman</p>
+                    </div>
+                    <div class="stat-item">
+                        <h3>50+</h3>
+                        <p>Proyek Selesai</p>
+                    </div>
+                    <div class="stat-item">
+                        <h3>20+</h3>
+                        <p>Klien Puas</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="services">
+        <div class="container">
+            <div class="section-title">
+                <h2>Services</h2>
+                <div class="line"></div>
+            </div>
+            <div class="services-grid">
+                <div class="service-card">
+                    <i class="fas fa-layer-group"></i>
+                    <h3>UI/UX Design</h3>
+                    <p>App Design, Website Design, Prototyping, Wireframing.</p>
+                </div>
+                <div class="service-card">
+                    <i class="fas fa-pen-nib"></i>
+                    <h3>Graphic Design</h3>
+                    <p>Logo, Social Media Kit, Branding Identity, Print Materials.</p>
+                </div>
+                <div class="service-card">
+                    <i class="fas fa-code"></i>
+                    <h3>Web Development</h3>
+                    <p>Responsive Digital Portfolio, Landing Pages, CMS.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Portfolio Section -->
+    <section id="portfolio" class="portfolio">
+        <div class="container">
+            <div class="section-title">
+                <h2>Selected Works</h2>
+                <div class="line"></div>
+            </div>
+            
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="uiux">UI/UX</button>
+                <button class="filter-btn" data-filter="graphic">Graphic</button>
+                <button class="filter-btn" data-filter="branding">Branding</button>
+            </div>
+
+            <div class="gallery">
+                <!-- Item 1 UI/UX -->
+                <div class="gallery-item" data-category="uiux" 
+                     data-title="Finance App" 
+                     data-desc="Platform manajemen keuangan pribadi yang membantu pengguna melacak pengeluaran dengan lebih bijak."
+                     data-problem="Pengguna sering lupa mencatat pengeluaran kecil karena proses input yang ribet dan antarmuka yang membosankan."
+                     data-process="Dimulai dengan user research, membuat persona, wireframing, hingga high-fidelity design di Figma."
+                     data-solution="Desain yang bersih, input satu jari, dan visualisasi data yang menarik untuk meningkatkan engagement.">
+                    <div class="image-placeholder gradient-1">
+                        <span>App Interface Design</span>
+                    </div>
+                    <div class="overlay">
+                        <h3>Finance App</h3>
+                        <p>UI/UX Design - Klik untuk Detail</p>
+                    </div>
+                </div>
+
+                <!-- Item 2 Graphic -->
+                <div class="gallery-item" data-category="graphic"
+                     data-title="Festival Poster"
+                     data-desc="Poster promosi untuk festival musik jazz tahunan."
+                     data-problem="Klien ingin poster yang 'catchy' tapi tetap elegan dan merepresentasikan nuansa jazz malam hari."
+                     data-process="Eksplorasi tipografi retro dan palet warna neon."
+                     data-solution="Menggabungkan elemen instrumen musik dengan gaya visual synthwave.">
+                    <div class="image-placeholder gradient-2">
+                        <span>Poster Art</span>
+                    </div>
+                    <div class="overlay">
+                        <h3>Festival Poster</h3>
+                        <p>Graphic Design - Klik untuk Detail</p>
+                    </div>
+                </div>
+
+                <!-- Item 3 Branding -->
+                <div class="gallery-item" data-category="branding"
+                     data-title="Tech Startup"
+                     data-desc="Identitas visual untuk startup teknologi AI."
+                     data-problem="Startup butuh logo yang futuristik tapi tetap terlihat humanis dan ramah."
+                     data-process="Brainstorming keyword: AI, Koneksi, Masa Depan."
+                     data-solution="Logo berbentuk simpul jaringan yang menyerupai otak manusia.">
+                    <div class="image-placeholder gradient-3">
+                        <span>Brand Identity</span>
+                    </div>
+                    <div class="overlay">
+                        <h3>Tech Startup</h3>
+                        <p>Branding - Klik untuk Detail</p>
+                    </div>
+                </div>
+
+                <!-- Item 4 UI/UX -->
+                <div class="gallery-item" data-category="uiux"
+                     data-title="Analytics Dashboard"
+                     data-desc="Dashboard admin untuk memantau data penjualan real-time."
+                     data-problem="Data yang terlalu kompleks membuat manajer bingung mengambil keputusan cepat."
+                     data-process="Melakukan audit informasi dan menyederhanakan hierarki visual."
+                     data-solution="Dashboard dengan layout modular dan prioritas informasi utama di bagian atas.">
+                    <div class="image-placeholder gradient-4">
+                        <span>Dashboard</span>
+                    </div>
+                    <div class="overlay">
+                        <h3>Analytics Dashboard</h3>
+                        <p>UI/UX Design - Klik untuk Detail</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section id="testimonials" class="testimonials">
+        <div class="container">
+            <div class="section-title">
+                <h2>What Client Says</h2>
+                <div class="line"></div>
+            </div>
+            <div class="testimonial-grid">
+                <div class="testimonial-card">
+                    <p>"Erick sangat proaktif dan desainnya selalu melebihi ekspektasi. UI yang dibuat sangat intuitif!"</p>
+                    <div class="client-info">
+                        <h4>Sarah Wijaya</h4>
+                        <span>Product Manager, GoTech</span>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <p>"Hasil branding yang luar biasa! Logo baru kami mendapat banyak pujian dari investor."</p>
+                    <div class="client-info">
+                        <h4>Budi Santoso</h4>
+                        <span>CEO, KopiKini</span>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <p>"Kerja cepat, komunikasi lancar, dan detail visualnya sangat rapi. Rekomen banget!"</p>
+                    <div class="client-info">
+                        <h4>Dina A.</h4>
+                        <span>Marketing Lead</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+        <div class="container">
+            <div class="contact-wrapper">
+                <div class="contact-info">
+                    <h2>Let's work together</h2>
+                    <p>Punya ide startup? Atau butuh rebranding? Mari diskusikan budget dan timeline Anda.</p>
+                    <div class="contact-details">
+                        <div class="detail">
+                            <i class="fas fa-envelope"></i>
+                            <span>hello@email.com</span>
+                        </div>
+                        <div class="detail">
+                            <i class="fas fa-phone"></i>
+                            <span>+62 812 3456 7890</span>
+                        </div>
+                        <div class="socials">
+                            <a href="#"><i class="fab fa-dribbble"></i></a>
+                            <a href="#"><i class="fab fa-behance"></i></a>
+                            <a href="#"><i class="fab fa-linkedin"></i></a>
+                            <a href="#"><i class="fab fa-instagram"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <form class="contact-form" action="https://formspree.io/f/EMAIL_ANDA_DISINI" method="POST">
+                    <div class="input-group">
+                        <input type="text" name="name" required>
+                        <label>Nama</label>
+                    </div>
+                    <div class="input-group">
+                        <input type="email" name="email" required>
+                        <label>Email</label>
+                    </div>
+                    <div class="input-group select-group">
+                        <select name="project_type" required>
+                            <option value="" disabled selected hidden>Pilih Jenis Project</option>
+                            <option value="UI/UX Design">UI/UX Design</option>
+                            <option value="Graphic Design">Graphic Design</option>
+                            <option value="Branding">Branding</option>
+                            <option value="Other">Lainnya</option>
+                        </select>
+                        <i class="fas fa-chevron-down select-icon"></i>
+                    </div>
+                    <div class="input-group">
+                        <textarea name="message" required></textarea>
+                        <label>Pesan</label>
+                    </div>
+                    <button type="submit" class="btn-primary">Kirim Pesan</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Project Modal -->
+    <div id="project-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <div id="modal-img-placeholder" class="modal-hero"></div>
+            <h2 id="modal-title">Judul Project</h2>
+            <p class="modal-tags" id="modal-category">UI/UX Design</p>
+            <div class="modal-body">
+                <h3>About Project</h3>
+                <p id="modal-desc">Deskripsi project...</p>
+                
+                <h3>Challenge</h3>
+                <p id="modal-problem">Masalah yang dihadapi...</p>
+                
+                <h3>Process & Solution</h3>
+                <p id="modal-process">Proses pengerjaan...</p>
+                <p id="modal-solution">Solusi yang diberikan...</p>
+            </div>
+            <a href="#" class="btn-primary modal-btn">Lihat Live Project (Demo)</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 Portfolio. Designed by Me.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
