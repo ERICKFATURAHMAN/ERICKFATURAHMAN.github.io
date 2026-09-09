@@ -5,10 +5,8 @@ const navSlide = () => {
     const navLinks = document.querySelectorAll('.nav-links li');
 
     burger.addEventListener('click', () => {
-        // Toggle Nav
         nav.classList.toggle('nav-active');
 
-        // Animate Links
         navLinks.forEach((link, index) => {
             if (link.style.animation) {
                 link.style.animation = '';
@@ -17,11 +15,9 @@ const navSlide = () => {
             }
         });
 
-        // Burger Animation
         burger.classList.toggle('toggle');
     });
     
-    // Close menu when link is clicked
     navLinks.forEach(link => {
         link.addEventListener('click', () => {
             nav.classList.remove('nav-active');
@@ -40,22 +36,27 @@ const cursor = document.querySelector('.cursor');
 const cursor2 = document.querySelector('.cursor2');
 
 document.addEventListener('mousemove', function(e){
-    cursor.style.cssText = cursor2.style.cssText = "left: " + e.clientX + "px; top: " + e.clientY + "px;";
+    if(cursor && cursor2) {
+        cursor.style.cssText = cursor2.style.cssText = "left: " + e.clientX + "px; top: " + e.clientY + "px;";
+    }
 });
 
-// Efek Hover pada elemen clickable
+// Hover Effect pada clickable elements
 const clickableElements = document.querySelectorAll('a, button, .gallery-item');
-
 clickableElements.forEach(el => {
     el.addEventListener('mouseenter', () => {
-        cursor.style.transform = 'translate(-50%, -50%) scale(1.5)';
-        cursor.style.backgroundColor = 'rgba(255,255,255,0.1)';
-        cursor.style.border = 'none';
+        if(cursor) {
+            cursor.style.transform = 'translate(-50%, -50%) scale(1.5)';
+            cursor.style.backgroundColor = 'rgba(255,255,255,0.1)';
+            cursor.style.border = 'none';
+        }
     });
     el.addEventListener('mouseleave', () => {
-        cursor.style.transform = 'translate(-50%, -50%) scale(1)';
-        cursor.style.backgroundColor = 'transparent';
-        cursor.style.border = '1px solid #fff';
+        if(cursor) {
+            cursor.style.transform = 'translate(-50%, -50%) scale(1)';
+            cursor.style.backgroundColor = 'transparent';
+            cursor.style.border = '1px solid #fff';
+        }
     });
 });
 
@@ -63,9 +64,10 @@ clickableElements.forEach(el => {
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
         e.preventDefault();
-        document.querySelector(this.getAttribute('href')).scrollIntoView({
-            behavior: 'smooth'
-        });
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+            target.scrollIntoView({ behavior: 'smooth' });
+        }
     });
 });
 
@@ -75,9 +77,7 @@ const galleryItems = document.querySelectorAll('.gallery-item');
 
 filterButtons.forEach(btn => {
     btn.addEventListener('click', () => {
-        // Remove active class from all buttons
         filterButtons.forEach(button => button.classList.remove('active'));
-        // Add active class to clicked button
         btn.classList.add('active');
 
         const filterValue = btn.getAttribute('data-filter');
@@ -85,7 +85,6 @@ filterButtons.forEach(btn => {
         galleryItems.forEach(item => {
             if (filterValue === 'all' || item.getAttribute('data-category') === filterValue) {
                 item.style.display = 'block';
-                // Animasi fade in simpel
                 setTimeout(() => {
                     item.style.opacity = '1';
                     item.style.transform = 'scale(1)';
@@ -101,7 +100,7 @@ filterButtons.forEach(btn => {
     });
 });
 
-// Input Animation Fix for Pre-filled inputs (if any)
+// Input Animation Fix for Pre-filled inputs
 const inputs = document.querySelectorAll('.input-group input, .input-group textarea');
 inputs.forEach(input => {
     input.addEventListener('blur', () => {
@@ -113,11 +112,8 @@ inputs.forEach(input => {
     });
 });
 
-// Reveal on Scroll Animation (Simple Intersection Observer)
-const observerOptions = {
-    threshold: 0.1
-};
-
+// Reveal on Scroll Animation
+const observerOptions = { threshold: 0.1 };
 const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
         if (entry.isIntersecting) {
@@ -127,22 +123,53 @@ const observer = new IntersectionObserver((entries) => {
 }, observerOptions);
 
 document.querySelectorAll('section').forEach(section => {
-    section.classList.add('fade-in-section'); // Add CSS class for transition later if needed
+    section.classList.add('fade-in-section');
     observer.observe(section);
 });
 
-// Form Handling (AJAX)
+// Modern Toast Notification Function
+function showToast(message, type = 'success') {
+    let container = document.querySelector('.toast-container');
+    if (!container) {
+        container = document.createElement('div');
+        container.className = 'toast-container';
+        document.body.appendChild(container);
+    }
+
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    const icon = type === 'success' ? 'fa-circle-check' : 'fa-circle-exclamation';
+    
+    toast.innerHTML = `
+        <i class="fa-solid ${icon}"></i>
+        <span>${message}</span>
+    `;
+
+    container.appendChild(toast);
+
+    setTimeout(() => {
+        toast.classList.add('show');
+    }, 100);
+
+    setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => {
+            toast.remove();
+        }, 400);
+    }, 4000);
+}
+
+// Form Handling (AJAX + Toast Notification)
 const contactForm = document.querySelector('.contact-form');
 if(contactForm) {
     contactForm.addEventListener('submit', function(e) {
         e.preventDefault();
         
         const formData = new FormData(this);
-        const action = this.getAttribute('action'); // Get the Formspree URL from HTML
+        const action = this.getAttribute('action');
 
-        // Check if user has updated the URL
         if(action.includes('EMAIL_ANDA_DISINI')) {
-            alert('Harap ganti "EMAIL_ANDA_DISINI" di file index.html dengan URL Formspree Anda terlebih dahulu!');
+            showToast('Harap ganti Formspree URL terlebih dahulu!', 'error');
             return;
         }
 
@@ -154,24 +181,21 @@ if(contactForm) {
         fetch(action, {
             method: 'POST',
             body: formData,
-            headers: {
-                'Accept': 'application/json'
-            }
+            headers: { 'Accept': 'application/json' }
         })
         .then(response => {
             if (response.ok) {
-                alert('Pesan berhasil dikirim! Saya akan segera menghubungi Anda.');
+                showToast('Pesan berhasil terkirim! Gua bakal kabarin secepatnya.', 'success');
                 this.reset();
-                // Reset input animations
                 document.querySelectorAll('.input-group input, .input-group textarea').forEach(input => {
                     input.classList.remove('has-content');
                 });
             } else {
-                alert('Oops! Ada masalah saat mengirim pesan Anda.');
+                showToast('Oops! Ada masalah saat mengirim pesan.', 'error');
             }
         })
         .catch(error => {
-            alert('Oops! Terjadi kesalahan koneksi.');
+            showToast('Koneksi bermasalah. Coba lagi nanti.', 'error');
         })
         .finally(() => {
             button.innerText = originalText;
@@ -186,7 +210,7 @@ const bgMusic = document.getElementById('bg-music');
 let isPlaying = false;
 
 if(musicBtn && bgMusic) {
-    bgMusic.volume = 0.3; // Set initial volume lower
+    bgMusic.volume = 0.3;
 
     musicBtn.addEventListener('click', () => {
         if (isPlaying) {
@@ -196,31 +220,27 @@ if(musicBtn && bgMusic) {
         } else {
             bgMusic.play().then(() => {
                 musicBtn.innerHTML = '<i class="fas fa-pause"></i>';
-                // Add simple rotation animation
                 musicBtn.style.animation = 'spin 4s linear infinite';
-                // Need to add keyframes for spin in CSS or inline
-                // Let's just use CSS class toggle if we had one, but inline works for simple logic.
             }).catch(e => {
                 console.log("Audio play blocked:", e);
-                alert("Klik sekali lagi untuk memutar musik (Browser memblokir autoplay).");
+                showToast('Klik sekali lagi untuk memutar audio.', 'error');
             });
         }
         isPlaying = !isPlaying;
     });
 }
 
-// Modal Logic
+// Modal Logic (Bisa Tampil Gambar & Text)
 const modal = document.getElementById("project-modal");
 const span = document.getElementsByClassName("close-modal")[0];
 const galleryLinks = document.querySelectorAll(".gallery-item .overlay"); 
-// Note: Click triggers on overlay
 
 galleryLinks.forEach(link => {
     link.addEventListener('click', function(e) {
-        e.stopPropagation(); // Prevent bubbling if needed
-        const item = this.parentElement; // .gallery-item
+        e.stopPropagation();
+        const item = this.parentElement;
         
-        // Get Data
+        // Ambil Data Teks
         const title = item.getAttribute('data-title');
         const cat = item.getAttribute('data-category');
         const desc = item.getAttribute('data-desc');
@@ -228,11 +248,7 @@ galleryLinks.forEach(link => {
         const process = item.getAttribute('data-process');
         const solution = item.getAttribute('data-solution');
         
-        // Get Gradient Class
-        const placeholder = item.querySelector('.image-placeholder');
-        const gradientClass = Array.from(placeholder.classList).find(cls => cls.startsWith('gradient-'));
-
-        // Populate Modal
+        // Set Data ke Modal
         document.getElementById('modal-title').innerText = title || "Project Detail";
         document.getElementById('modal-category').innerText = cat ? cat.toUpperCase() : "CASE STUDY";
         document.getElementById('modal-desc').innerText = desc || "Deskripsi proyek belum tersedia.";
@@ -240,24 +256,31 @@ galleryLinks.forEach(link => {
         document.getElementById('modal-process').innerText = process || "Proses pengerjaan...";
         document.getElementById('modal-solution').innerText = solution || "Solusi akhir yang diberikan...";
         
-        // Handle Image Placeholder in Modal
+        // Handle Gambar Modal
         const modalHero = document.getElementById('modal-img-placeholder');
-        // Reset classes
-        modalHero.className = 'modal-hero'; 
-        if(gradientClass) modalHero.classList.add(gradientClass);
+        const cardImg = item.querySelector('.gallery-img-overlay');
+
+        if (cardImg && cardImg.getAttribute('src')) {
+            modalHero.className = 'modal-hero with-img';
+            modalHero.innerHTML = `<img src="${cardImg.src}" alt="${title}" class="modal-img-content">`;
+        } else {
+            const placeholder = item.querySelector('.image-placeholder');
+            const gradientClass = placeholder ? Array.from(placeholder.classList).find(cls => cls.startsWith('gradient-')) : null;
+            modalHero.innerHTML = '';
+            modalHero.className = 'modal-hero';
+            if(gradientClass) modalHero.classList.add(gradientClass);
+        }
         
-        // Show Modal
+        // Buka Modal
         modal.style.display = "block";
         setTimeout(() => {
             modal.classList.add('show');
         }, 10);
         
-        // Disable body scroll
         document.body.style.overflow = 'hidden';
     });
 });
 
-// Close Modal
 if(span) {
     span.onclick = function() {
         closeModal();
