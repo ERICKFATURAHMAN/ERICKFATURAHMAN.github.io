@@ -1,18 +1,31 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
+    <!-- Google tag (gtag.js) - Google Analytics 4 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-147H98JMNP"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-147H98JMNP');
+    </script>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <!-- SEO & Digital Marketing Meta Tags -->
-    <meta name="description" content="Catatan, opini, dan studi kasus digital marketing, UI/UX, serta web development oleh Erick Faturahman.">
+    <meta name="description" id="meta-description" content="Catatan, opini, dan studi kasus digital marketing, UI/UX, serta web development oleh Erick Faturahman.">
     <meta name="keywords" content="Digital Marketing, UI UX, Web Development, SEO, Content Strategy, Erick Faturahman">
-    <meta property="og:title" content="Blog & Insights - Erick Faturahman">
-    <meta property="og:description" content="Eksplorasi strategi pemasaran digital, teknologi web, dan perancangan produk digital.">
-    <meta property="og:image" content="erik.jpeg">
-    <meta property="og:url" content="https://www.erickfaturahman.tech/blog.html">
     
-    <title>Blog & Insights - Erick Faturahman</title>
+    <!-- Open Graph Meta Tags Dinamis -->
+    <meta property="og:title" id="og-title" content="Blog & Insights - Erick Faturahman">
+    <meta property="og:description" id="og-description" content="Eksplorasi strategi pemasaran digital, teknologi web, dan perancangan produk digital.">
+    <meta property="og:image" id="og-image" content="erik.jpeg">
+    <meta property="og:url" id="og-url" content="https://www.erickfaturahman.tech/blog.html">
+    <meta property="og:type" content="article">
+    
+    <title id="page-title">Blog & Insights - Erick Faturahman</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -213,7 +226,17 @@
             display: block;
         }
 
-        /* Tombol Hapus Komentar (Pasti Bisa Diklik & Berada di Lapisan Terdepan) */
+        /* Styling Heading On-Page SEO pada Narasi */
+        .article-heading-seo {
+            color: var(--text-color);
+            font-size: clamp(1.2rem, 2.5vw, 1.45rem);
+            margin: 1.8rem 0 0.8rem 0;
+            font-weight: 600;
+            line-height: 1.4;
+            border-left: 3px solid var(--accent-color);
+            padding-left: 0.6rem;
+        }
+
         .comment-delete-btn {
             background: rgba(255, 71, 87, 0.1) !important;
             border: 1px solid rgba(255, 71, 87, 0.3) !important;
@@ -345,8 +368,8 @@
                 <input type="hidden" id="edit-doc-id" value="">
 
                 <div class="form-field-group">
-                    <label for="post-title">Judul Artikel</label>
-                    <input type="text" id="post-title" placeholder="Contoh: Menjembatani UI/UX & Marketing" required>
+                    <label for="post-title">Judul Artikel (Optimasi On-Page SEO H1)</label>
+                    <input type="text" id="post-title" placeholder="Contoh: Menjembatani UI/UX & Digital Marketing" required>
                 </div>
                 
                 <div class="form-field-group">
@@ -367,7 +390,7 @@
                 <!-- Fitur Sisipkan Foto di Posisi Kursor via Token Bersih -->
                 <div class="form-field-group">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.2rem; flex-wrap: wrap; gap: 0.4rem;">
-                        <label for="post-content" style="margin-bottom: 0;">Isi Cerita / Pengalaman / Laporan Tugas</label>
+                        <label for="post-content" style="margin-bottom: 0;">Isi Cerita / Narasi</label>
                         <div>
                             <input type="file" id="insert-inline-img" accept="image/*" style="display: none;">
                             <button type="button" id="btn-insert-img" style="background: rgba(108,92,231,0.15); border: 1px solid var(--accent-color); color: var(--text-color); font-size: 0.76rem; padding: 0.35rem 0.8rem; border-radius: 6px; cursor: pointer; transition: all 0.2s;">
@@ -375,7 +398,7 @@
                             </button>
                         </div>
                     </div>
-                    <p style="font-size: 0.74rem; color: var(--light-grey); margin-bottom: 0.3rem;">Foto akan disisipkan sebagai kode rapi seperti <code style="color: var(--accent-color);">[FOTO_1]</code> sehingga teks tetap bersih saat diedit.</p>
+                    <p style="font-size: 0.74rem; color: var(--light-grey); margin-bottom: 0.3rem;">Tips On-Page SEO: Gunakan awalan <code style="color: var(--accent-color);">## Sub-Judul</code> untuk membuat sub-heading H2 dan <code style="color: var(--accent-color);">**teks**</code> untuk cetak tebal.</p>
                     <textarea id="post-content" placeholder="Tulis cerita di sini..." required></textarea>
                 </div>
 
@@ -444,7 +467,7 @@
         </div>
     </div>
 
-    <!-- Modal Kustom Konfirmasi Hapus Komentar (Layer Paling Atas z-index 10000) -->
+    <!-- Modal Kustom Konfirmasi Hapus Komentar -->
     <div id="confirm-comment-modal" class="modal" style="z-index: 10000;">
         <div class="modal-content dialog-modal-content">
             <div style="width: 46px; height: 46px; border-radius: 50%; background: rgba(255, 71, 87, 0.15); display: inline-flex; align-items: center; justify-content: center; margin-bottom: 0.8rem;">
@@ -493,7 +516,7 @@
         let activePostId = null;
         let unsubscribeComments = null;
 
-        // EKSPOS FUNGSI KE WINDOW SUPAYA ONCLICK TOMBOL SELALU TERPANGGIL
+        // Prompt Hapus Komentar
         window.promptDeleteComment = function(postId, commentId, authorName) {
             pendingCommentDelete = { postId, commentId, author: authorName };
             document.getElementById("confirm-comment-desc").innerText = `Hapus komentar dari "${authorName}" secara permanen?`;
@@ -503,54 +526,85 @@
             setTimeout(() => confirmModal.classList.add("show"), 10);
         };
 
-        function getShareableUrl() {
-            if (window.location.protocol === 'file:' || !window.location.origin || window.location.origin === "null") {
-                return "https://www.erickfaturahman.tech/blog.html";
-            }
-            return window.location.origin + window.location.pathname;
+        function getShareableUrl(postId = "") {
+            const baseUrl = (window.location.protocol === 'file:' || !window.location.origin || window.location.origin === "null")
+                ? "https://www.erickfaturahman.tech/blog.html"
+                : window.location.origin + window.location.pathname;
+
+            return postId ? `${baseUrl}?post=${encodeURIComponent(postId)}` : baseUrl;
         }
 
-        // Render Teks & Render Foto Inline
-        function renderFormattedContent(rawText, inlineImgs = {}) {
+        // Render Teks & Struktur On-Page SEO (H2 & Image Alt Text)
+        function renderFormattedContent(rawText, inlineImgs = {}, postTitle = "") {
             const container = document.getElementById("read-content");
             container.innerHTML = "";
 
             const regex = /(\[FOTO_\d+\]|!\[.*?\]\(data:image\/[a-zA-Z]+;base64,[^)]+\))/g;
             const parts = rawText.split(regex);
+            let imgIndex = 1;
 
             parts.forEach(part => {
                 if (!part) return;
 
+                // Cek token [FOTO_X]
                 if (part.startsWith("[FOTO_") && part.endsWith("]")) {
                     const imgSrc = inlineImgs[part];
                     if (imgSrc) {
                         const img = document.createElement("img");
                         img.src = imgSrc;
                         img.className = "article-inline-image";
-                        img.alt = "Foto Narasi";
+                        img.alt = `${postTitle} - Ilustrasi Bagian ${imgIndex++}`;
                         container.appendChild(img);
                         return;
                     }
                 }
 
+                // Cek legacy markdown
                 const legacyMatch = part.match(/!\[.*?\]\((data:image\/[a-zA-Z]+;base64,[^)]+)\)/);
                 if (legacyMatch) {
                     const img = document.createElement("img");
                     img.src = legacyMatch[1];
                     img.className = "article-inline-image";
-                    img.alt = "Foto Sisipan";
+                    img.alt = `${postTitle} - Gambar Pendukung`;
                     container.appendChild(img);
                     return;
                 }
 
-                if (part.trim() !== "") {
-                    const p = document.createElement("p");
-                    p.style.whiteSpace = "pre-line";
-                    p.style.marginBottom = "1.2rem";
-                    p.innerText = part;
-                    container.appendChild(p);
+                // Teks narasi dengan parsing Sub-Heading (## ) & Bold (**)
+                const lines = part.split("\n");
+                let currentParagraph = [];
+
+                lines.forEach(line => {
+                    const trimmed = line.trim();
+                    if (trimmed.startsWith("## ")) {
+                        if (currentParagraph.length > 0) {
+                            renderParagraph(container, currentParagraph.join("\n"));
+                            currentParagraph = [];
+                        }
+                        const h2 = document.createElement("h2");
+                        h2.className = "article-heading-seo";
+                        h2.innerText = trimmed.replace("## ", "");
+                        container.appendChild(h2);
+                    } else {
+                        currentParagraph.push(line);
+                    }
+                });
+
+                if (currentParagraph.length > 0 && currentParagraph.join("").trim() !== "") {
+                    renderParagraph(container, currentParagraph.join("\n"));
                 }
             });
+        }
+
+        function renderParagraph(container, text) {
+            const p = document.createElement("p");
+            p.style.whiteSpace = "pre-line";
+            p.style.marginBottom = "1.2rem";
+
+            // Format cetak tebal **teks**
+            let formatted = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            p.innerHTML = formatted;
+            container.appendChild(p);
         }
 
         // Render Tombol Admin di Footer
@@ -612,7 +666,7 @@
                     card.className = "service-card";
                     card.style.cssText = "display: flex; flex-direction: column; justify-content: space-between; border-radius: 18px; padding: 2rem; cursor: pointer; overflow: hidden; word-break: break-word;";
 
-                    const imgThumb = post.image ? `<div style="width: 100%; height: 180px; border-radius: 12px; overflow: hidden; margin-bottom: 1.5rem; position: relative; z-index: 1;"><img src="${post.image}" style="width: 100%; height: 100%; object-fit: cover; display: block;"></div>` : "";
+                    const imgThumb = post.image ? `<div style="width: 100%; height: 180px; border-radius: 12px; overflow: hidden; margin-bottom: 1.5rem; position: relative; z-index: 1;"><img src="${post.image}" alt="${post.title}" style="width: 100%; height: 100%; object-fit: cover; display: block;"></div>` : "";
 
                     const adminButtons = isAdminLoggedIn ? `
                         <button class="card-edit-btn" title="Edit Artikel" type="button">
@@ -626,6 +680,8 @@
                     const cleanPreview = post.content
                         .replace(/!\[.*?\]\([^)]+\)/g, "[Foto]")
                         .replace(/\[FOTO_\d+\]/g, "[Foto]")
+                        .replace(/##\s+/g, "")
+                        .replace(/\*\*/g, "")
                         .substring(0, 110);
 
                     card.innerHTML = `
@@ -666,7 +722,7 @@
 
                     card.querySelector(".card-share-btn").addEventListener("click", (e) => {
                         e.stopPropagation();
-                        const fullUrl = getShareableUrl();
+                        const fullUrl = getShareableUrl(postId);
                         navigator.clipboard.writeText(fullUrl).then(() => {
                             if (typeof showToast === 'function') {
                                 showToast('Tautan artikel berhasil disalin!', 'success');
@@ -701,6 +757,16 @@
                     }
 
                     grid.appendChild(card);
+                }
+
+                // Cek Parameter URL saat awal dibuka (Deep Linking ke artikel spesifik)
+                const urlParams = new URLSearchParams(window.location.search);
+                const linkedPostId = urlParams.get('post');
+                if (linkedPostId) {
+                    const targetDoc = querySnapshot.docs.find(d => d.id === linkedPostId);
+                    if (targetDoc) {
+                        openReadModal(targetDoc.data(), targetDoc.id, false);
+                    }
                 }
             } catch (err) {
                 console.error("Gagal memuat artikel dari Firebase:", err);
@@ -751,37 +817,60 @@
             document.body.style.overflow = "hidden";
         }
 
-        // Buka Modal Baca + Render Komentar
+        // Buka Modal Baca + Update Open Graph Meta & GA4 Event
         function openReadModal(post, postId, scrollToComments = false) {
             activePostId = postId;
             document.getElementById("read-title").innerText = post.title;
             document.getElementById("read-category").innerText = post.category;
             document.getElementById("read-meta").innerText = `${post.date} • ${post.readTime}`;
 
-            renderFormattedContent(post.content, post.inlineImages || {});
+            renderFormattedContent(post.content, post.inlineImages || {}, post.title);
 
             const imgWrap = document.getElementById("read-img-wrapper");
             const imgTag = document.getElementById("read-image");
             if (post.image) {
                 imgTag.src = post.image;
+                imgTag.alt = `${post.title} - Cover Artikel`;
                 imgWrap.style.display = "block";
             } else {
                 imgWrap.style.display = "none";
             }
 
-            const shareUrl = getShareableUrl();
+            // Update Dinamis Open Graph Meta Tags
+            const articleUrl = getShareableUrl(postId);
+            const snippetText = post.content.replace(/\[FOTO_\d+\]/g, "").replace(/##\s+/g, "").substring(0, 150) + "...";
+
+            document.getElementById("page-title").innerText = `${post.title} - Erick Faturahman`;
+            document.getElementById("meta-description").content = snippetText;
+            document.getElementById("og-title").content = post.title;
+            document.getElementById("og-description").content = snippetText;
+            document.getElementById("og-url").content = articleUrl;
+            if (post.image) {
+                document.getElementById("og-image").content = post.image;
+            }
+
+            // Kirim Event Page View ke Google Analytics 4 (GA4)
+            if (typeof gtag === 'function') {
+                gtag('event', 'select_content', {
+                    content_type: 'article',
+                    item_id: postId,
+                    item_name: post.title
+                });
+            }
+
+            // Share URLs Dinamis dengan Link Spesifik Artikel
             const shareTitle = `Baca artikel "${post.title}" oleh Erick Faturahman`;
 
             document.getElementById("share-wa").onclick = () => {
-                window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(shareTitle + " " + shareUrl)}`, '_blank');
+                window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(shareTitle + " " + articleUrl)}`, '_blank');
             };
 
             document.getElementById("share-linkedin").onclick = () => {
-                window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`, '_blank');
+                window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(articleUrl)}`, '_blank');
             };
 
             document.getElementById("share-twitter").onclick = () => {
-                window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareTitle)}&url=${encodeURIComponent(shareUrl)}`, '_blank');
+                window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareTitle)}&url=${encodeURIComponent(articleUrl)}`, '_blank');
             };
 
             if (unsubscribeComments) unsubscribeComments();
@@ -804,7 +893,6 @@
                     const item = document.createElement("div");
                     item.style.cssText = "background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); padding: 0.9rem 1rem; border-radius: 10px;";
                     
-                    // Tombol Hapus memanggil fungsi global via inline onclick
                     const safeAuthor = (c.author || "").replace(/'/g, "\\'");
                     const deleteCommentBtnHtml = isAdminLoggedIn ? `
                         <button class="comment-delete-btn" type="button" onclick="event.stopPropagation(); window.promptDeleteComment('${postId}', '${commentId}', '${safeAuthor}')" title="Hapus Komentar Ini">
@@ -841,7 +929,7 @@
             document.body.style.overflow = "hidden";
         }
 
-        // Eksekusi Hapus Komentar dari Modal Kustom
+        // Eksekusi Hapus Komentar
         document.getElementById("cancel-delete-comment").onclick = () => {
             closeModal(document.getElementById("confirm-comment-modal"));
             pendingCommentDelete = null;
@@ -969,6 +1057,10 @@
         function closeReaderModal() {
             if (unsubscribeComments) unsubscribeComments();
             closeModal(document.getElementById("read-modal"));
+
+            // Reset Title & URL saat kembali ke grid
+            document.getElementById("page-title").innerText = "Blog & Insights - Erick Faturahman";
+            window.history.replaceState({}, document.title, window.location.pathname);
         }
 
         if (closePinBtn) closePinBtn.onclick = () => closeModal(pinModal);
