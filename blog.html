@@ -15,15 +15,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <!-- SEO & Digital Marketing Meta Tags -->
-    <meta name="description" id="meta-description" content="Catatan, opini, dan studi kasus digital marketing, UI/UX, serta web development oleh Erick Faturahman.">
-    <meta name="keywords" content="Digital Marketing, UI UX, Web Development, SEO, Content Strategy, Erick Faturahman">
+    <meta name="description" id="meta-description" content="Kumpulan studi kasus, opini, dan strategi digital marketing, perancangan UI/UX, serta pengembangan web oleh Erick Faturahman.">
+    <meta name="keywords" content="Digital Marketing, UI UX, Web Development, SEO, Content Strategy, Erick Faturahman, Analisis Konversi">
+    <meta name="author" content="Erick Faturahman">
     
-    <!-- Open Graph Meta Tags Dinamis -->
-    <meta property="og:title" id="og-title" content="Blog & Insights - Erick Faturahman">
-    <meta property="og:description" id="og-description" content="Eksplorasi strategi pemasaran digital, teknologi web, dan perancangan produk digital.">
-    <meta property="og:image" id="og-image" content="erik.jpeg">
+    <!-- Open Graph Meta Tags (Pratinjau Media Sosial & WhatsApp) -->
+    <meta property="og:site_name" content="Erick Faturahman">
+    <meta property="og:title" id="og-title" content="Blog & Case Studies — Erick Faturahman">
+    <meta property="og:description" id="og-description" content="Eksplorasi strategi pemasaran digital terukur, implementasi UI/UX, dan studi kasus produk web. Baca analisis lengkapnya di sini.">
+    <meta property="og:image" id="og-image" content="https://www.erickfaturahman.tech/erik.jpeg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
     <meta property="og:url" id="og-url" content="https://www.erickfaturahman.tech/blog.html">
     <meta property="og:type" content="article">
+
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Blog & Case Studies — Erick Faturahman">
+    <meta name="twitter:description" content="Eksplorasi strategi pemasaran digital terukur, implementasi UI/UX, dan studi kasus produk web.">
+    <meta name="twitter:image" content="https://www.erickfaturahman.tech/erik.jpeg">
     
     <title id="page-title">Blog & Insights - Erick Faturahman</title>
     <link rel="stylesheet" href="style.css">
@@ -836,18 +846,7 @@
                 imgWrap.style.display = "none";
             }
 
-            // Update Dinamis Open Graph Meta Tags
             const articleUrl = getShareableUrl(postId);
-            const snippetText = post.content.replace(/\[FOTO_\d+\]/g, "").replace(/##\s+/g, "").substring(0, 150) + "...";
-
-            document.getElementById("page-title").innerText = `${post.title} - Erick Faturahman`;
-            document.getElementById("meta-description").content = snippetText;
-            document.getElementById("og-title").content = post.title;
-            document.getElementById("og-description").content = snippetText;
-            document.getElementById("og-url").content = articleUrl;
-            if (post.image) {
-                document.getElementById("og-image").content = post.image;
-            }
 
             // Kirim Event Page View ke Google Analytics 4 (GA4)
             if (typeof gtag === 'function') {
@@ -862,7 +861,7 @@
             const shareTitle = `Baca artikel "${post.title}" oleh Erick Faturahman`;
 
             document.getElementById("share-wa").onclick = () => {
-                window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(shareTitle + " " + articleUrl)}`, '_blank');
+                window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(shareTitle + "\n\n" + articleUrl)}`, '_blank');
             };
 
             document.getElementById("share-linkedin").onclick = () => {
