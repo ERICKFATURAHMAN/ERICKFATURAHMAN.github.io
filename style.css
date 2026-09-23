@@ -892,10 +892,91 @@ footer {
 .toast.error i { color: #ff4757; }
 
 /* ====================================================
+   FIX KHUSUS AKSI KARTU BLOG (KOMENTAR & TAUTAN)
+   ==================================================== */
+.blog-card-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    padding-top: 1rem;
+    margin-top: auto;
+    width: 100%;
+}
+
+.blog-card-date {
+    font-size: 0.82rem;
+    color: var(--light-grey);
+    line-height: 1;
+}
+
+.blog-actions-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.action-chip-btn,
+.action-circle-btn {
+    all: unset;
+    box-sizing: border-box;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--light-grey);
+    cursor: pointer;
+    transition: all 0.25s ease;
+    user-select: none;
+}
+
+.action-chip-btn {
+    height: 32px;
+    padding: 0 0.75rem;
+    border-radius: 20px;
+    gap: 0.4rem;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+/* Mematikan font-size 2.2rem dari .service-card i agar tombol tidak rusak */
+.service-card .blog-actions-wrap .action-chip-btn i {
+    font-size: 0.85rem !important;
+    color: var(--accent-color) !important;
+    margin-bottom: 0 !important;
+    line-height: 1 !important;
+}
+
+.action-circle-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+}
+
+.service-card .blog-actions-wrap .action-circle-btn i {
+    font-size: 0.8rem !important;
+    color: var(--light-grey) !important;
+    margin-bottom: 0 !important;
+    line-height: 1 !important;
+}
+
+.action-chip-btn:hover,
+.action-circle-btn:hover {
+    background: var(--accent-color);
+    border-color: var(--accent-color);
+    color: #ffffff;
+    transform: translateY(-2px);
+}
+
+.service-card .blog-actions-wrap .action-chip-btn:hover i,
+.service-card .blog-actions-wrap .action-circle-btn:hover i {
+    color: #ffffff !important;
+}
+
+/* ====================================================
    RESPONSIVE OPTIMIZATIONS (TABLET & MOBILE)
    ==================================================== */
-
-/* Matikan kustom kursor di perangkat layar sentuh */
 @media (hover: none) and (pointer: coarse) {
     .cursor, .cursor2 {
         display: none !important;
@@ -989,7 +1070,6 @@ footer {
         transform: rotate(45deg) translate(-5px, -6px);
     }
 
-    /* Section Spacing di Mobile */
     .services, .about, .portfolio, .testimonials, .contact {
         padding: 4.5rem 6%;
     }
@@ -1027,7 +1107,6 @@ footer {
         height: 290px;
     }
 
-    /* Di HP, buat overlay portfolio muncul sedikit atau gampang diakses */
     .overlay {
         bottom: 0;
         background: linear-gradient(transparent, rgba(0, 0, 0, 0.88));

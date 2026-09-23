@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- SEO & Digital Marketing Meta Tags -->
+    <meta name="description" content="Catatan, opini, dan studi kasus digital marketing, UI/UX, serta web development oleh Erick Faturahman.">
+    <meta name="keywords" content="Digital Marketing, UI UX, Web Development, SEO, Content Strategy, Erick Faturahman">
+    <meta property="og:title" content="Blog & Insights - Erick Faturahman">
+    <meta property="og:description" content="Eksplorasi strategi pemasaran digital, teknologi web, dan perancangan produk digital.">
+    <meta property="og:image" content="erik.jpeg">
+    <meta property="og:url" content="https://www.erickfaturahman.tech/blog.html">
+    
+    <title>Blog & Insights - Erick Faturahman</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <!-- CSS Isolasi Tombol Aksi & Modal PIN -->
+    <style>
+        .blog-card-bottom {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            padding-top: 1rem;
+            margin-top: auto;
+            width: 100%;
+        }
+
+        .blog-card-date {
+            font-size: 0.82rem;
+            color: var(--light-grey);
+            line-height: 1;
+        }
+
+        .blog-actions-wrap {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .service-card .blog-actions-wrap .card-comment-btn,
+        .service-card .blog-actions-wrap .card-share-btn,
+        .service-card .blog-actions-wrap .card-edit-btn,
+        .service-card .blog-actions-wrap .card-delete-btn {
+            all: unset;
+            box-sizing: border-box;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--light-grey);
+            cursor: pointer;
+            transition: all 0.25s ease;
+            user-select: none;
+        }
+
+        .service-card .blog-actions-wrap .card-comment-btn {
+            height: 32px;
+            padding: 0 0.75rem;
+            border-radius: 20px;
+            gap: 0.4rem;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .service-card .blog-actions-wrap .card-comment-btn i {
+            font-size: 0.85rem !important;
+            color: var(--accent-color) !important;
+            margin-bottom: 0 !important;
+            line-height: 1 !important;
+        }
+
+        .service-card .blog-actions-wrap .card-share-btn,
+        .service-card .blog-actions-wrap .card-edit-btn,
+        .service-card .blog-actions-wrap .card-delete-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+        }
+
+        .service-card .blog-actions-wrap .card-share-btn i,
+        .service-card .blog-actions-wrap .card-edit-btn i,
+        .service-card .blog-actions-wrap .card-delete-btn i {
+            font-size: 0.8rem !important;
+            margin-bottom: 0 !important;
+            line-height: 1 !important;
+        }
+
+        .service-card .blog-actions-wrap .card-edit-btn:hover {
+            background: #f1c40f;
+            border-color: #f1c40f;
+            color: #000;
+            transform: translateY(-2px);
+        }
+
+        .service-card .blog-actions-wrap .card-delete-btn:hover {
+            background: #ff4757;
+            border-color: #ff4757;
+            color: #fff;
+            transform: translateY(-2px);
+        }
+
+        .service-card .blog-actions-wrap .card-comment-btn:hover,
+        .service-card .blog-actions-wrap .card-share-btn:hover {
+            background: var(--accent-color);
+            border-color: var(--accent-color);
+            color: #ffffff;
+            transform: translateY(-2px);
+        }
+
+        .service-card .blog-actions-wrap .card-comment-btn:hover i,
+        .service-card .blog-actions-wrap .card-share-btn:hover i {
+            color: #ffffff !important;
+        }
+
+        /* Modal PIN */
+        .pin-modal-content {
+            max-width: 400px;
+            text-align: center;
+            background: #161616;
+            border: 1px solid rgba(108, 92, 231, 0.4);
+            border-radius: 18px;
+            padding: 2.2rem 2rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7);
+        }
+
+        .pin-input {
+            width: 100%;
+            padding: 0.85rem 1rem;
+            text-align: center;
+            font-size: 1.25rem;
+            letter-spacing: 6px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            color: var(--text-color);
+            margin: 1.2rem 0;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .pin-input:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 15px rgba(108, 92, 231, 0.3);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .pin-error-msg {
+            color: #ff4757;
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="cursor"></div>
+    <div class="cursor2"></div>
+
+    <!-- Navigasi -->
+    <nav class="navbar">
+        <div class="logo"><a href="index.html" style="text-decoration: none; color: var(--text-color);">PORTFOLIO.</a></div>
+        <ul class="nav-links">
+            <li><a href="index.html#home">Home</a></li>
+            <li><a href="index.html#about">About</a></li>
+            <li><a href="index.html#portfolio">Work</a></li>
+            <li><a href="blog.html" style="color: var(--accent-color);">Blog</a></li>
+            <li><a href="index.html#testimonials">Feedback</a></li>
+            <li><a href="index.html#contact">Contact</a></li>
+        </ul>
+        
+        <div class="music-control">
+            <button id="music-btn" class="music-btn" aria-label="Toggle Music">
+                <i class="fas fa-play"></i>
+            </button>
+            <audio id="bg-music" loop>
+                <source src="musek.mp3" type="audio/mp3">
+            </audio>
+        </div>
+
+        <div class="burger">
+            <div class="line1"></div>
+            <div class="line2"></div>
+            <div class="line3"></div>
+        </div>
+    </nav>
+
+    <!-- Header Section -->
+    <section class="blog-hero" style="padding: 10rem 8% 2rem; text-align: center;">
+        <div class="container">
+            <p class="greeting" style="margin-bottom: 0.5rem;">Insights & Thoughts</p>
+            <h1 class="headline" style="font-size: clamp(2.5rem, 5vw, 4rem); margin-bottom: 1rem;">Digital Marketing & Tech Notes</h1>
+            <p class="sub-headline" style="margin: 0 auto; max-width: 600px;">Wadah praktik strategi konten, SEO, dan dokumentasi pengalaman perkuliahan.</p>
+        </div>
+    </section>
+
+    <!-- Blog Posts Grid -->
+    <section class="blog-section" style="padding: 2.5rem 8% 6rem;">
+        <div class="container">
+            <div class="gallery" id="blog-grid" style="grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));">
+                <!-- Artikel dimuat via Firebase di sini -->
+            </div>
+
+            <!-- Panel Aksi Tersembunyi (Hanya muncul saat status admin aktif) -->
+            <div id="admin-actions-container" style="display: none; margin-top: 4.5rem; text-align: center;">
+                <!-- Tombol aksi dimuat secara dinamis via JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Modal PIN Verifikasi -->
+    <div id="pin-modal" class="modal">
+        <div class="modal-content pin-modal-content">
+            <span class="close-modal" id="close-pin">&times;</span>
+            <div style="width: 44px; height: 44px; border-radius: 50%; background: rgba(108, 92, 231, 0.15); display: inline-flex; align-items: center; justify-content: center; margin-bottom: 0.8rem;">
+                <i class="fas fa-key" style="color: var(--accent-color); font-size: 1.1rem;"></i>
+            </div>
+            <h2 style="font-size: 1.3rem; color: var(--text-color); margin-bottom: 0.3rem;">Akses Pengelola</h2>
+            <p style="color: var(--light-grey); font-size: 0.85rem;">Masukkan PIN untuk membuka kontrol penerbitan artikel.</p>
+            
+            <form id="pin-form">
+                <input type="password" id="pin-input" class="pin-input" placeholder="••••" maxlength="12" required autofocus>
+                <p id="pin-error" class="pin-error-msg">PIN salah. Coba lagi!</p>
+                <button type="submit" class="btn-primary" style="width: 100%; cursor: pointer; padding: 0.75rem; font-size: 0.88rem;">Buka Akses</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Form Tulis / Edit Artikel -->
+    <div id="write-modal" class="modal">
+        <div class="modal-content" style="max-width: 700px;">
+            <span class="close-modal" id="close-write">&times;</span>
+            <h2 id="modal-form-title" style="margin-bottom: 1.5rem; font-size: 1.8rem; color: var(--text-color);">Tulis Pengalaman / Tugas Baru</h2>
+            
+            <form id="post-form">
+                <input type="hidden" id="edit-doc-id" value="">
+
+                <div class="input-group">
+                    <input type="text" id="post-title" required>
+                    <label>Judul Artikel</label>
+                </div>
+                
+                <div class="input-group">
+                    <input type="text" id="post-category" placeholder=" " required>
+                    <label>Kategori (Contoh: DIGITAL MARKETING / FIELD EXPERIENCES)</label>
+                </div>
+
+                <div class="input-group">
+                    <input type="text" id="post-read" placeholder=" " value="4 min read" required>
+                    <label>Estimasi Baca (Contoh: 3 min read)</label>
+                </div>
+
+                <div style="margin-bottom: 1.8rem; text-align: left;">
+                    <label style="display: block; font-size: 0.85rem; color: var(--light-grey); margin-bottom: 0.5rem;">Upload Foto Pendukung (Biarkan kosong jika tidak ingin mengubah):</label>
+                    <input type="file" id="post-image" accept="image/*" style="color: var(--light-grey); font-size: 0.9rem;">
+                </div>
+
+                <div class="input-group">
+                    <textarea id="post-content" style="height: 180px;" required></textarea>
+                    <label>Isi Cerita / Pengalaman / Laporan Tugas</label>
+                </div>
+
+                <button type="submit" id="post-submit-btn" class="btn-primary" style="width: 100%; cursor: pointer;">Terbitkan Artikel ke Cloud</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Baca Artikel -->
+    <div id="read-modal" class="modal">
+        <div class="modal-content" style="max-width: 780px;">
+            <span class="close-modal" id="close-read">&times;</span>
+            <div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 1rem; flex-wrap: wrap;">
+                <span class="modal-tags" id="read-category" style="margin-bottom: 0;">KATEGORI</span>
+                <span id="read-meta" style="font-size: 0.85rem; color: var(--light-grey);">Waktu</span>
+            </div>
+            <h1 id="read-title" style="font-size: clamp(1.8rem, 3.5vw, 2.3rem); line-height: 1.3; margin-bottom: 1.5rem; word-break: break-word;">Judul Artikel</h1>
+            
+            <div id="read-img-wrapper" style="width: 100%; max-height: 400px; overflow: hidden; border-radius: 12px; margin-bottom: 1.5rem; display: none;">
+                <img id="read-image" src="" alt="Foto Artikel" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+            </div>
+
+            <div class="modal-body" id="read-content" style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1.5rem; white-space: pre-line; word-break: break-word; overflow-wrap: anywhere;">
+                <!-- Konten teks artikel -->
+            </div>
+
+            <!-- Social Share Buttons -->
+            <div style="margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+                <span style="font-size: 0.95rem; font-weight: 600; color: var(--text-color);"><i class="fas fa-share-nodes" style="color: var(--accent-color); margin-right: 0.5rem;"></i> Bagikan Artikel:</span>
+                <div style="display: flex; gap: 0.8rem;">
+                    <button id="share-wa" class="skill-tag" style="background: none; text-decoration: none; display: inline-flex; align-items: center; gap: 0.4rem; color: #25D366; border-color: rgba(37, 211, 102, 0.4); cursor: pointer;">
+                        <i class="fab fa-whatsapp"></i> WhatsApp
+                    </button>
+                    <button id="share-linkedin" class="skill-tag" style="background: none; text-decoration: none; display: inline-flex; align-items: center; gap: 0.4rem; color: #0A66C2; border-color: rgba(10, 102, 194, 0.4); cursor: pointer;">
+                        <i class="fab fa-linkedin"></i> LinkedIn
+                    </button>
+                    <button id="share-twitter" class="skill-tag" style="background: none; text-decoration: none; display: inline-flex; align-items: center; gap: 0.4rem; color: #1DA1F2; border-color: rgba(29, 161, 242, 0.4); cursor: pointer;">
+                        <i class="fab fa-x-twitter"></i> X
+                    </button>
+                </div>
+            </div>
+
+            <!-- Komentar Pembaca -->
+            <div id="comments-section" style="margin-top: 3rem; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1);">
+                <h3 style="font-size: 1.3rem; margin-bottom: 1.5rem; color: var(--text-color);">
+                    <i class="fas fa-comments" style="color: var(--accent-color); margin-right: 0.5rem;"></i> Diskusi & Komentar
+                </h3>
+
+                <form id="comment-form" style="background: rgba(255,255,255,0.02); padding: 1.5rem; border-radius: 14px; border: 1px solid rgba(255,255,255,0.06); margin-bottom: 2rem;">
+                    <div class="input-group" style="margin-bottom: 1.2rem;">
+                        <input type="text" id="comment-author" required>
+                        <label>Nama Anda</label>
+                    </div>
+                    <div class="input-group" style="margin-bottom: 1.2rem;">
+                        <textarea id="comment-text" style="height: 70px;" required></textarea>
+                        <label>Tulis tanggapan atau komentar...</label>
+                    </div>
+                    <button type="submit" class="btn-primary" style="padding: 0.6rem 1.8rem; font-size: 0.85rem; cursor: pointer;">Kirim Komentar</button>
+                </form>
+
+                <div id="comments-list" style="display: flex; flex-direction: column; gap: 1rem;">
+                    <p style="color: var(--light-grey); font-size: 0.85rem;">Memuat tanggapan...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p style="user-select: none; cursor: default;">&copy; 2026 Erick Faturahman. Designed & Built by Me.</p>
+    </footer>
+
+    <script src="script.js"></script>
+
+    <!-- FIREBASE INLINE SCRIPT WITH EASTER EGG AUTH -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+        import { getFirestore, collection, addDoc, doc, updateDoc, deleteDoc, getDocs, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+        // PIN RAHASIA ADMIN
+        const ADMIN_PIN = "erick2026";
+        let isAdminLoggedIn = false;
+        let currentPostExistingImage = "";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCz0jZPPYF1-Vqr4_9C84IM_xKAb1C9-Ww",
+            authDomain: "erickporto.firebaseapp.com",
+            projectId: "erickporto",
+            storageBucket: "erickporto.firebasestorage.app",
+            messagingSenderId: "727873946737",
+            appId: "1:727873946737:web:1ccd7d64c1ebd2c3ae87d0",
+            measurementId: "G-147H98JMNP"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const postsRef = collection(db, "posts");
+
+        let activePostId = null;
+        let unsubscribeComments = null;
+
+        function getShareableUrl() {
+            if (window.location.protocol === 'file:' || !window.location.origin || window.location.origin === "null") {
+                return "https://www.erickfaturahman.tech/blog.html";
+            }
+            return window.location.origin + window.location.pathname;
+        }
+
+        // Render Tombol Admin di Bawah saat Sesi Terbuka
+        function renderAdminFooterUI() {
+            const container = document.getElementById("admin-actions-container");
+
+            if (isAdminLoggedIn) {
+                container.style.display = "block";
+                container.innerHTML = `
+                    <div style="padding: 1.2rem 1.8rem; background: rgba(255,255,255,0.02); border-radius: 16px; border: 1px dashed rgba(108,92,231,0.4); display: inline-flex; gap: 1rem; align-items: center; flex-wrap: wrap; justify-content: center;">
+                        <span style="color: #2ed573; font-size: 0.85rem; font-weight: 600;"><i class="fas fa-check-circle"></i> Sesi Penulis Terbuka</span>
+                        <button id="open-write-modal" class="btn-primary" style="font-size: 0.82rem; padding: 0.5rem 1.4rem; border-radius: 50px; cursor: pointer;">
+                            <i class="fas fa-pen"></i> Tulis Cerita Baru
+                        </button>
+                        <button id="logout-admin" class="btn-secondary" style="font-size: 0.82rem; padding: 0.5rem 1.4rem; border-radius: 50px; cursor: pointer;">
+                            Kunci Sesi
+                        </button>
+                    </div>
+                `;
+
+                document.getElementById("open-write-modal").onclick = () => openCreatePostModal();
+                document.getElementById("logout-admin").onclick = () => {
+                    isAdminLoggedIn = false;
+                    renderAdminFooterUI();
+                    fetchAndRenderPosts();
+                };
+            } else {
+                container.style.display = "none";
+                container.innerHTML = "";
+            }
+        }
+
+        // Fetch & Render Semua Artikel
+        async function fetchAndRenderPosts() {
+            const grid = document.getElementById("blog-grid");
+            if (!grid) return;
+
+            grid.innerHTML = `<p style="color: var(--light-grey); text-align: center; grid-column: 1/-1;">Menghubungkan ke cloud database...</p>`;
+
+            try {
+                const q = query(postsRef, orderBy("timestamp", "desc"));
+                const querySnapshot = await getDocs(q);
+
+                grid.innerHTML = "";
+
+                if (querySnapshot.empty) {
+                    grid.innerHTML = `<p style="color: var(--light-grey); text-align: center; grid-column: 1/-1;">Belum ada artikel yang diterbitkan.</p>`;
+                    return;
+                }
+
+                for (const docSnap of querySnapshot.docs) {
+                    const post = docSnap.data();
+                    const postId = docSnap.id;
+
+                    const commentsSnap = await getDocs(collection(db, "posts", postId, "comments"));
+                    const commentCount = commentsSnap.size;
+
+                    const card = document.createElement("article");
+                    card.className = "service-card";
+                    card.style.cssText = "display: flex; flex-direction: column; justify-content: space-between; border-radius: 18px; padding: 2rem; cursor: pointer; overflow: hidden; word-break: break-word;";
+
+                    const imgThumb = post.image ? `<div style="width: 100%; height: 180px; border-radius: 12px; overflow: hidden; margin-bottom: 1.5rem; position: relative; z-index: 1;"><img src="${post.image}" style="width: 100%; height: 100%; object-fit: cover; display: block;"></div>` : "";
+
+                    // Tombol Edit dan Hapus hanya tampil jika admin aktif
+                    const adminButtons = isAdminLoggedIn ? `
+                        <button class="card-edit-btn" title="Edit Artikel" type="button">
+                            <i class="fas fa-pen"></i>
+                        </button>
+                        <button class="card-delete-btn" title="Hapus Artikel" type="button">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    ` : '';
+
+                    card.innerHTML = `
+                        <div class="card-main-content" style="width: 100%; overflow: hidden;">
+                            ${imgThumb}
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; gap: 0.5rem; flex-wrap: wrap;">
+                                <span class="modal-tags" style="margin-bottom: 0; font-size: 0.75rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 65%;">${post.category}</span>
+                                <span style="font-size: 0.8rem; color: var(--light-grey); white-space: nowrap;">${post.readTime}</span>
+                            </div>
+                            <h2 style="font-size: 1.3rem; margin-bottom: 0.8rem; line-height: 1.4; word-break: break-word;">${post.title}</h2>
+                            <p style="color: var(--light-grey); font-size: 0.9rem; line-height: 1.6; margin-bottom: 1.5rem; word-break: break-word; overflow-wrap: anywhere;">${post.content.substring(0, 110)}...</p>
+                        </div>
+
+                        <div class="blog-card-bottom">
+                            <span class="blog-card-date">${post.date}</span>
+                            
+                            <div class="blog-actions-wrap">
+                                <button class="card-comment-btn" type="button" title="Lihat Komentar">
+                                    <i class="far fa-comment-dots"></i>
+                                    <span>${commentCount}</span>
+                                </button>
+                                
+                                <button class="card-share-btn" type="button" title="Salin Tautan Artikel">
+                                    <i class="fas fa-link"></i>
+                                </button>
+
+                                ${adminButtons}
+                            </div>
+                        </div>
+                    `;
+
+                    card.querySelector(".card-main-content").addEventListener("click", () => openReadModal(post, postId, false));
+
+                    card.querySelector(".card-comment-btn").addEventListener("click", (e) => {
+                        e.stopPropagation();
+                        openReadModal(post, postId, true);
+                    });
+
+                    card.querySelector(".card-share-btn").addEventListener("click", (e) => {
+                        e.stopPropagation();
+                        const fullUrl = getShareableUrl();
+                        navigator.clipboard.writeText(fullUrl).then(() => {
+                            if (typeof showToast === 'function') {
+                                showToast('Tautan artikel berhasil disalin!', 'success');
+                            } else {
+                                alert('Tautan artikel berhasil disalin!');
+                            }
+                        }).catch(() => {
+                            alert('Gagal menyalin tautan.');
+                        });
+                    });
+
+                    if (isAdminLoggedIn) {
+                        const editBtn = card.querySelector(".card-edit-btn");
+                        const deleteBtn = card.querySelector(".card-delete-btn");
+
+                        editBtn.addEventListener("click", (e) => {
+                            e.stopPropagation();
+                            openEditPostModal(post, postId);
+                        });
+
+                        deleteBtn.addEventListener("click", async (e) => {
+                            e.stopPropagation();
+                            if (confirm(`Yakin ingin menghapus artikel "${post.title}"? Dokumen akan terhapus permanen dari Firestore.`)) {
+                                try {
+                                    await deleteDoc(doc(db, "posts", postId));
+                                    fetchAndRenderPosts();
+                                } catch (err) {
+                                    alert("Gagal menghapus: " + err.message);
+                                }
+                            }
+                        });
+                    }
+
+                    grid.appendChild(card);
+                }
+            } catch (err) {
+                console.error("Gagal memuat artikel dari Firebase:", err);
+                grid.innerHTML = `<p style="color: #ff4757; text-align: center; grid-column: 1/-1;">Gagal terhubung ke database cloud.</p>`;
+            }
+        }
+
+        // Buka Modal Edit
+        function openEditPostModal(post, docId) {
+            document.getElementById("modal-form-title").innerText = "Edit Artikel";
+            document.getElementById("post-submit-btn").innerText = "Simpan Perubahan";
+            document.getElementById("edit-doc-id").value = docId;
+            document.getElementById("post-title").value = post.title;
+            document.getElementById("post-category").value = post.category;
+            document.getElementById("post-read").value = post.readTime;
+            document.getElementById("post-content").value = post.content;
+            document.getElementById("post-image").value = "";
+            currentPostExistingImage = post.image || "";
+
+            document.querySelectorAll("#write-modal .input-group input, #write-modal .input-group textarea").forEach(input => {
+                if (input.value !== "") input.classList.add("has-content");
+            });
+
+            writeModal.style.display = "block";
+            setTimeout(() => writeModal.classList.add("show"), 10);
+            document.body.style.overflow = "hidden";
+        }
+
+        // Buka Modal Buat Baru
+        function openCreatePostModal() {
+            document.getElementById("modal-form-title").innerText = "Tulis Pengalaman / Tugas Baru";
+            document.getElementById("post-submit-btn").innerText = "Terbitkan Artikel ke Cloud";
+            document.getElementById("edit-doc-id").value = "";
+            postForm.reset();
+            currentPostExistingImage = "";
+
+            document.querySelectorAll("#write-modal .input-group input, #write-modal .input-group textarea").forEach(input => {
+                input.classList.remove("has-content");
+            });
+
+            document.getElementById("post-read").value = "4 min read";
+
+            writeModal.style.display = "block";
+            setTimeout(() => writeModal.classList.add("show"), 10);
+            document.body.style.overflow = "hidden";
+        }
+
+        // Buka Modal Baca
+        function openReadModal(post, postId, scrollToComments = false) {
+            activePostId = postId;
+            document.getElementById("read-title").innerText = post.title;
+            document.getElementById("read-category").innerText = post.category;
+            document.getElementById("read-meta").innerText = `${post.date} • ${post.readTime}`;
+            document.getElementById("read-content").innerText = post.content;
+
+            const imgWrap = document.getElementById("read-img-wrapper");
+            const imgTag = document.getElementById("read-image");
+            if (post.image) {
+                imgTag.src = post.image;
+                imgWrap.style.display = "block";
+            } else {
+                imgWrap.style.display = "none";
+            }
+
+            const shareUrl = getShareableUrl();
+            const shareTitle = `Baca artikel "${post.title}" oleh Erick Faturahman`;
+
+            document.getElementById("share-wa").onclick = () => {
+                window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(shareTitle + " " + shareUrl)}`, '_blank');
+            };
+
+            document.getElementById("share-linkedin").onclick = () => {
+                window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`, '_blank');
+            };
+
+            document.getElementById("share-twitter").onclick = () => {
+                window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareTitle)}&url=${encodeURIComponent(shareUrl)}`, '_blank');
+            };
+
+            if (unsubscribeComments) unsubscribeComments();
+
+            const commentsRef = collection(db, "posts", postId, "comments");
+            const qComments = query(commentsRef, orderBy("timestamp", "asc"));
+
+            unsubscribeComments = onSnapshot(qComments, (snapshot) => {
+                const list = document.getElementById("comments-list");
+                list.innerHTML = "";
+
+                if (snapshot.empty) {
+                    list.innerHTML = `<p style="color: var(--light-grey); font-size: 0.85rem; font-style: italic;">Belum ada tanggapan. Jadilah yang pertama berkomentar!</p>`;
+                    return;
+                }
+
+                snapshot.forEach((doc) => {
+                    const c = doc.data();
+                    const item = document.createElement("div");
+                    item.style.cssText = "background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); padding: 1rem 1.2rem; border-radius: 12px;";
+                    item.innerHTML = `
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+                            <span style="font-weight: 600; font-size: 0.9rem; color: var(--text-color);"><i class="fas fa-circle-user" style="color: var(--accent-color); margin-right: 0.4rem;"></i> ${c.author}</span>
+                            <span style="font-size: 0.75rem; color: var(--light-grey);">${c.timeString}</span>
+                        </div>
+                        <p style="color: var(--light-grey); font-size: 0.88rem; line-height: 1.5; word-break: break-word;">${c.text}</p>
+                    `;
+                    list.appendChild(item);
+                });
+            });
+
+            const readModal = document.getElementById("read-modal");
+            readModal.style.display = "block";
+            setTimeout(() => {
+                readModal.classList.add("show");
+                if (scrollToComments) {
+                    const commentSec = document.getElementById("comments-section");
+                    if (commentSec) {
+                        commentSec.scrollIntoView({ behavior: 'smooth' });
+                    }
+                }
+            }, 50);
+            document.body.style.overflow = "hidden";
+        }
+
+        // Komentar
+        const commentForm = document.getElementById("comment-form");
+        if (commentForm) {
+            commentForm.addEventListener("submit", async function(e) {
+                e.preventDefault();
+                if (!activePostId) return;
+
+                const authorInput = document.getElementById("comment-author");
+                const textInput = document.getElementById("comment-text");
+                const submitBtn = this.querySelector("button[type='submit']");
+
+                submitBtn.disabled = true;
+                submitBtn.innerText = "Mengirim...";
+
+                const now = new Date();
+                const timeString = `${now.getDate()} ${now.toLocaleString('id-ID', { month: 'short' })} ${now.getFullYear()}, ${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
+
+                try {
+                    const commentsRef = collection(db, "posts", activePostId, "comments");
+                    await addDoc(commentsRef, {
+                        author: authorInput.value.trim(),
+                        text: textInput.value.trim(),
+                        timestamp: Date.now(),
+                        timeString: timeString
+                    });
+
+                    textInput.value = "";
+                    textInput.classList.remove("has-content");
+                } catch (error) {
+                    console.error("Gagal kirim komentar:", error);
+                    alert("Gagal mengirim tanggapan.");
+                } finally {
+                    submitBtn.disabled = false;
+                    submitBtn.innerText = "Kirim Komentar";
+                }
+            });
+        }
+
+        // Modal Controls & Easter Egg Triggers
+        const pinModal = document.getElementById("pin-modal");
+        const closePinBtn = document.getElementById("close-pin");
+        const pinForm = document.getElementById("pin-form");
+        const pinInput = document.getElementById("pin-input");
+        const pinError = document.getElementById("pin-error");
+
+        const writeModal = document.getElementById("write-modal");
+        const closeWriteBtn = document.getElementById("close-write");
+        const closeReadBtn = document.getElementById("close-read");
+        const postForm = document.getElementById("post-form");
+
+        function openPinModalHandler() {
+            pinInput.value = "";
+            pinError.style.display = "none";
+            pinModal.style.display = "block";
+            setTimeout(() => {
+                pinModal.classList.add("show");
+                pinInput.focus();
+            }, 10);
+            document.body.style.overflow = "hidden";
+        }
+
+        // Trigger Rahasia 1: Dobel-klik logo PORTFOLIO. di navbar
+        const logoElement = document.querySelector(".navbar .logo");
+        if (logoElement) {
+            logoElement.addEventListener("dblclick", (e) => {
+                e.preventDefault();
+                openPinModalHandler();
+            });
+        }
+
+        // Trigger Rahasia 2: Klik 3x cepat pada teks copyright footer
+        const footerText = document.querySelector("footer p");
+        let footerClicks = 0;
+        let footerTimer = null;
+        if (footerText) {
+            footerText.addEventListener("click", () => {
+                footerClicks++;
+                clearTimeout(footerTimer);
+                if (footerClicks >= 3) {
+                    footerClicks = 0;
+                    openPinModalHandler();
+                } else {
+                    footerTimer = setTimeout(() => { footerClicks = 0; }, 600);
+                }
+            });
+        }
+
+        // Validasi PIN Form
+        if (pinForm) {
+            pinForm.addEventListener("submit", (e) => {
+                e.preventDefault();
+                if (pinInput.value === ADMIN_PIN) {
+                    isAdminLoggedIn = true;
+                    closeModal(pinModal);
+                    renderAdminFooterUI();
+                    fetchAndRenderPosts();
+                } else {
+                    pinError.style.display = "block";
+                    pinInput.value = "";
+                    pinInput.focus();
+                }
+            });
+        }
+
+        function closeReaderModal() {
+            if (unsubscribeComments) unsubscribeComments();
+            closeModal(document.getElementById("read-modal"));
+        }
+
+        if (closePinBtn) closePinBtn.onclick = () => closeModal(pinModal);
+        if (closeWriteBtn) closeWriteBtn.onclick = () => closeModal(writeModal);
+        if (closeReadBtn) closeReadBtn.onclick = closeReaderModal;
+
+        window.addEventListener("click", (e) => {
+            if (e.target === pinModal) closeModal(pinModal);
+            if (e.target === writeModal) closeModal(writeModal);
+            if (e.target === document.getElementById("read-modal")) closeReaderModal();
+        });
+
+        function closeModal(targetModal) {
+            if (!targetModal) return;
+            targetModal.classList.remove("show");
+            setTimeout(() => {
+                targetModal.style.display = "none";
+                document.body.style.overflow = "auto";
+            }, 300);
+        }
+
+        function compressImage(file, maxWidth = 800, quality = 0.7) {
+            return new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = (event) => {
+                    const img = new Image();
+                    img.src = event.target.result;
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        let width = img.width;
+                        let height = img.height;
+
+                        if (width > maxWidth) {
+                            height = Math.round((height * maxWidth) / width);
+                            width = maxWidth;
+                        }
+
+                        canvas.width = width;
+                        canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+
+                        resolve(canvas.toDataURL('image/jpeg', quality));
+                    };
+                };
+            });
+        }
+
+        // Submit Form (Tambah / Edit)
+        if (postForm) {
+            postForm.addEventListener("submit", async function(e) {
+                e.preventDefault();
+
+                if (!isAdminLoggedIn) {
+                    alert("Aksi ditolak! Silakan verifikasi PIN Admin.");
+                    return;
+                }
+
+                const submitBtn = document.getElementById("post-submit-btn");
+                const originalBtnText = submitBtn.innerText;
+                submitBtn.innerText = "Menyimpan ke Cloud...";
+                submitBtn.disabled = true;
+
+                const editDocId = document.getElementById("edit-doc-id").value;
+                const title = document.getElementById("post-title").value;
+                const category = document.getElementById("post-category").value.toUpperCase();
+                const readTime = document.getElementById("post-read").value;
+                const content = document.getElementById("post-content").value;
+                const fileInput = document.getElementById("post-image");
+
+                try {
+                    let base64Img = currentPostExistingImage;
+                    if (fileInput.files && fileInput.files[0]) {
+                        base64Img = await compressImage(fileInput.files[0]);
+                    }
+
+                    if (editDocId) {
+                        await updateDoc(doc(db, "posts", editDocId), {
+                            title: title,
+                            category: category,
+                            readTime: readTime,
+                            content: content,
+                            image: base64Img
+                        });
+                    } else {
+                        const now = new Date();
+                        const monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+                        const dateStr = `${monthNames[now.getMonth()]} ${now.getFullYear()}`;
+
+                        await addDoc(postsRef, {
+                            title: title,
+                            category: category,
+                            readTime: readTime,
+                            date: dateStr,
+                            content: content,
+                            image: base64Img,
+                            timestamp: Date.now()
+                        });
+                    }
+
+                    postForm.reset();
+                    closeModal(writeModal);
+                    fetchAndRenderPosts();
+                } catch (error) {
+                    console.error("Gagal simpan ke Firestore:", error);
+                    alert("Gagal memproses artikel: " + error.message);
+                } finally {
+                    submitBtn.innerText = originalBtnText;
+                    submitBtn.disabled = false;
+                }
+            });
+        }
+
+        renderAdminFooterUI();
+        fetchAndRenderPosts();
+    </script>
+</body>
+</html>
