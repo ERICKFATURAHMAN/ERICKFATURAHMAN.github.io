@@ -17,7 +17,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
-    <!-- CSS Isolasi Tombol Aksi & Modal PIN -->
+    <!-- CSS Isolasi Tombol Aksi, Moderasi Komentar, dan Gambar Inline -->
     <style>
         .blog-card-bottom {
             display: flex;
@@ -117,8 +117,8 @@
             color: #ffffff !important;
         }
 
-        /* Modal PIN */
-        .pin-modal-content {
+        /* Modal Dialog Box Kustom */
+        .dialog-modal-content {
             max-width: 400px;
             text-align: center;
             background: #161616;
@@ -126,6 +126,8 @@
             border-radius: 18px;
             padding: 2.2rem 2rem;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7);
+            position: relative;
+            z-index: 10001;
         }
 
         .pin-input {
@@ -154,6 +156,109 @@
             font-size: 0.85rem;
             margin-top: 0.5rem;
             display: none;
+        }
+
+        /* Form Layout Mobile-First */
+        .form-field-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.45rem;
+            margin-bottom: 1.3rem;
+            text-align: left;
+            width: 100%;
+        }
+
+        .form-field-group label {
+            font-size: 0.82rem;
+            color: var(--light-grey);
+            font-weight: 500;
+            line-height: 1.4;
+            display: block;
+        }
+
+        .form-field-group input[type="text"],
+        .form-field-group textarea {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 10px;
+            padding: 0.8rem 1rem;
+            color: var(--text-color);
+            font-size: 0.92rem;
+            outline: none;
+            transition: all 0.25s ease;
+            box-sizing: border-box;
+        }
+
+        .form-field-group input[type="text"]:focus,
+        .form-field-group textarea:focus {
+            border-color: var(--accent-color);
+            background: rgba(255, 255, 255, 0.07);
+            box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.18);
+        }
+
+        .form-field-group textarea {
+            min-height: 170px;
+            resize: vertical;
+            line-height: 1.6;
+        }
+
+        .article-inline-image {
+            width: 100%;
+            max-height: 480px;
+            object-fit: cover;
+            border-radius: 12px;
+            margin: 1.6rem 0;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            display: block;
+        }
+
+        /* Tombol Hapus Komentar (Pasti Bisa Diklik & Berada di Lapisan Terdepan) */
+        .comment-delete-btn {
+            background: rgba(255, 71, 87, 0.1) !important;
+            border: 1px solid rgba(255, 71, 87, 0.3) !important;
+            color: #ff4757 !important;
+            font-size: 0.78rem !important;
+            cursor: pointer !important;
+            padding: 0.3rem 0.7rem !important;
+            border-radius: 6px !important;
+            transition: all 0.2s ease !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 0.35rem !important;
+            position: relative !important;
+            z-index: 50 !important;
+            user-select: none !important;
+        }
+
+        .comment-delete-btn:hover {
+            background: rgba(255, 71, 87, 0.25) !important;
+            border-color: #ff4757 !important;
+        }
+
+        @media (max-width: 768px) {
+            .modal {
+                padding: 1rem 0.6rem !important;
+            }
+
+            .modal-content {
+                padding: 1.4rem 1.1rem !important;
+                margin: 0.5rem auto !important;
+                border-radius: 14px !important;
+                max-width: 95% !important;
+            }
+
+            .close-modal {
+                top: 0.8rem !important;
+                right: 1rem !important;
+                font-size: 26px !important;
+            }
+
+            #modal-form-title {
+                font-size: 1.35rem !important;
+                margin-bottom: 1.2rem !important;
+                padding-right: 1.5rem;
+            }
         }
     </style>
 </head>
@@ -205,7 +310,7 @@
                 <!-- Artikel dimuat via Firebase di sini -->
             </div>
 
-            <!-- Panel Aksi Tersembunyi (Hanya muncul saat status admin aktif) -->
+            <!-- Panel Aksi Tersembunyi -->
             <div id="admin-actions-container" style="display: none; margin-top: 4.5rem; text-align: center;">
                 <!-- Tombol aksi dimuat secara dinamis via JS -->
             </div>
@@ -214,7 +319,7 @@
 
     <!-- Modal PIN Verifikasi -->
     <div id="pin-modal" class="modal">
-        <div class="modal-content pin-modal-content">
+        <div class="modal-content dialog-modal-content">
             <span class="close-modal" id="close-pin">&times;</span>
             <div style="width: 44px; height: 44px; border-radius: 50%; background: rgba(108, 92, 231, 0.15); display: inline-flex; align-items: center; justify-content: center; margin-bottom: 0.8rem;">
                 <i class="fas fa-key" style="color: var(--accent-color); font-size: 1.1rem;"></i>
@@ -232,39 +337,49 @@
 
     <!-- Modal Form Tulis / Edit Artikel -->
     <div id="write-modal" class="modal">
-        <div class="modal-content" style="max-width: 700px;">
+        <div class="modal-content" style="max-width: 680px;">
             <span class="close-modal" id="close-write">&times;</span>
-            <h2 id="modal-form-title" style="margin-bottom: 1.5rem; font-size: 1.8rem; color: var(--text-color);">Tulis Pengalaman / Tugas Baru</h2>
+            <h2 id="modal-form-title" style="margin-bottom: 1.4rem; font-size: 1.6rem; color: var(--text-color);">Tulis Pengalaman / Tugas Baru</h2>
             
             <form id="post-form">
                 <input type="hidden" id="edit-doc-id" value="">
 
-                <div class="input-group">
-                    <input type="text" id="post-title" required>
-                    <label>Judul Artikel</label>
+                <div class="form-field-group">
+                    <label for="post-title">Judul Artikel</label>
+                    <input type="text" id="post-title" placeholder="Contoh: Menjembatani UI/UX & Marketing" required>
                 </div>
                 
-                <div class="input-group">
-                    <input type="text" id="post-category" placeholder=" " required>
-                    <label>Kategori (Contoh: DIGITAL MARKETING / FIELD EXPERIENCES)</label>
+                <div class="form-field-group">
+                    <label for="post-category">Kategori (Contoh: DIGITAL MARKETING / FIELD EXPERIENCES)</label>
+                    <input type="text" id="post-category" placeholder="DIGITAL MARKETING" required>
                 </div>
 
-                <div class="input-group">
-                    <input type="text" id="post-read" placeholder=" " value="4 min read" required>
-                    <label>Estimasi Baca (Contoh: 3 min read)</label>
+                <div class="form-field-group">
+                    <label for="post-read">Estimasi Baca (Contoh: 3 min read)</label>
+                    <input type="text" id="post-read" value="4 min read" required>
                 </div>
 
-                <div style="margin-bottom: 1.8rem; text-align: left;">
-                    <label style="display: block; font-size: 0.85rem; color: var(--light-grey); margin-bottom: 0.5rem;">Upload Foto Pendukung (Biarkan kosong jika tidak ingin mengubah):</label>
-                    <input type="file" id="post-image" accept="image/*" style="color: var(--light-grey); font-size: 0.9rem;">
+                <div class="form-field-group">
+                    <label for="post-image">Foto Sampul / Cover (Biarkan kosong jika tidak mengubah):</label>
+                    <input type="file" id="post-image" accept="image/*" style="color: var(--light-grey); font-size: 0.85rem; padding: 0.4rem 0;">
                 </div>
 
-                <div class="input-group">
-                    <textarea id="post-content" style="height: 180px;" required></textarea>
-                    <label>Isi Cerita / Pengalaman / Laporan Tugas</label>
+                <!-- Fitur Sisipkan Foto di Posisi Kursor via Token Bersih -->
+                <div class="form-field-group">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.2rem; flex-wrap: wrap; gap: 0.4rem;">
+                        <label for="post-content" style="margin-bottom: 0;">Isi Cerita / Pengalaman / Laporan Tugas</label>
+                        <div>
+                            <input type="file" id="insert-inline-img" accept="image/*" style="display: none;">
+                            <button type="button" id="btn-insert-img" style="background: rgba(108,92,231,0.15); border: 1px solid var(--accent-color); color: var(--text-color); font-size: 0.76rem; padding: 0.35rem 0.8rem; border-radius: 6px; cursor: pointer; transition: all 0.2s;">
+                                <i class="fas fa-image" style="color: var(--accent-color); margin-right: 0.3rem;"></i> + Sisipkan Foto di Kursor
+                            </button>
+                        </div>
+                    </div>
+                    <p style="font-size: 0.74rem; color: var(--light-grey); margin-bottom: 0.3rem;">Foto akan disisipkan sebagai kode rapi seperti <code style="color: var(--accent-color);">[FOTO_1]</code> sehingga teks tetap bersih saat diedit.</p>
+                    <textarea id="post-content" placeholder="Tulis cerita di sini..." required></textarea>
                 </div>
 
-                <button type="submit" id="post-submit-btn" class="btn-primary" style="width: 100%; cursor: pointer;">Terbitkan Artikel ke Cloud</button>
+                <button type="submit" id="post-submit-btn" class="btn-primary" style="width: 100%; cursor: pointer; padding: 0.85rem; margin-top: 0.5rem;">Terbitkan Artikel ke Cloud</button>
             </form>
         </div>
     </div>
@@ -273,57 +388,73 @@
     <div id="read-modal" class="modal">
         <div class="modal-content" style="max-width: 780px;">
             <span class="close-modal" id="close-read">&times;</span>
-            <div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 1rem; flex-wrap: wrap;">
+            <div style="display: flex; gap: 0.8rem; align-items: center; margin-bottom: 1rem; flex-wrap: wrap;">
                 <span class="modal-tags" id="read-category" style="margin-bottom: 0;">KATEGORI</span>
                 <span id="read-meta" style="font-size: 0.85rem; color: var(--light-grey);">Waktu</span>
             </div>
-            <h1 id="read-title" style="font-size: clamp(1.8rem, 3.5vw, 2.3rem); line-height: 1.3; margin-bottom: 1.5rem; word-break: break-word;">Judul Artikel</h1>
+            <h1 id="read-title" style="font-size: clamp(1.6rem, 3.5vw, 2.2rem); line-height: 1.3; margin-bottom: 1.5rem; word-break: break-word;">Judul Artikel</h1>
             
             <div id="read-img-wrapper" style="width: 100%; max-height: 400px; overflow: hidden; border-radius: 12px; margin-bottom: 1.5rem; display: none;">
-                <img id="read-image" src="" alt="Foto Artikel" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+                <img id="read-image" src="" alt="Foto Cover" style="width: 100%; height: 100%; object-fit: cover; display: block;">
             </div>
 
-            <div class="modal-body" id="read-content" style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1.5rem; white-space: pre-line; word-break: break-word; overflow-wrap: anywhere;">
-                <!-- Konten teks artikel -->
+            <!-- Konten Artikel -->
+            <div class="modal-body" id="read-content" style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1.5rem; word-break: break-word; overflow-wrap: anywhere; line-height: 1.8;">
+                <!-- Konten teks & foto artikel -->
             </div>
 
             <!-- Social Share Buttons -->
             <div style="margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
-                <span style="font-size: 0.95rem; font-weight: 600; color: var(--text-color);"><i class="fas fa-share-nodes" style="color: var(--accent-color); margin-right: 0.5rem;"></i> Bagikan Artikel:</span>
-                <div style="display: flex; gap: 0.8rem;">
-                    <button id="share-wa" class="skill-tag" style="background: none; text-decoration: none; display: inline-flex; align-items: center; gap: 0.4rem; color: #25D366; border-color: rgba(37, 211, 102, 0.4); cursor: pointer;">
-                        <i class="fab fa-whatsapp"></i> WhatsApp
+                <span style="font-size: 0.95rem; font-weight: 600; color: var(--text-color);"><i class="fas fa-share-nodes" style="color: var(--accent-color); margin-right: 0.5rem;"></i> Bagikan:</span>
+                <div style="display: flex; gap: 0.6rem; flex-wrap: wrap;">
+                    <button id="share-wa" class="skill-tag" style="background: none; text-decoration: none; display: inline-flex; align-items: center; gap: 0.4rem; color: #25D366; border-color: rgba(37, 211, 102, 0.4); cursor: pointer; padding: 0.4rem 0.9rem;">
+                        <i class="fab fa-whatsapp"></i> WA
                     </button>
-                    <button id="share-linkedin" class="skill-tag" style="background: none; text-decoration: none; display: inline-flex; align-items: center; gap: 0.4rem; color: #0A66C2; border-color: rgba(10, 102, 194, 0.4); cursor: pointer;">
+                    <button id="share-linkedin" class="skill-tag" style="background: none; text-decoration: none; display: inline-flex; align-items: center; gap: 0.4rem; color: #0A66C2; border-color: rgba(10, 102, 194, 0.4); cursor: pointer; padding: 0.4rem 0.9rem;">
                         <i class="fab fa-linkedin"></i> LinkedIn
                     </button>
-                    <button id="share-twitter" class="skill-tag" style="background: none; text-decoration: none; display: inline-flex; align-items: center; gap: 0.4rem; color: #1DA1F2; border-color: rgba(29, 161, 242, 0.4); cursor: pointer;">
+                    <button id="share-twitter" class="skill-tag" style="background: none; text-decoration: none; display: inline-flex; align-items: center; gap: 0.4rem; color: #1DA1F2; border-color: rgba(29, 161, 242, 0.4); cursor: pointer; padding: 0.4rem 0.9rem;">
                         <i class="fab fa-x-twitter"></i> X
                     </button>
                 </div>
             </div>
 
-            <!-- Komentar Pembaca -->
-            <div id="comments-section" style="margin-top: 3rem; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1);">
-                <h3 style="font-size: 1.3rem; margin-bottom: 1.5rem; color: var(--text-color);">
+            <!-- Komentar Pembaca & Moderasi Hapus -->
+            <div id="comments-section" style="margin-top: 2.5rem; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1);">
+                <h3 style="font-size: 1.25rem; margin-bottom: 1.2rem; color: var(--text-color);">
                     <i class="fas fa-comments" style="color: var(--accent-color); margin-right: 0.5rem;"></i> Diskusi & Komentar
                 </h3>
 
-                <form id="comment-form" style="background: rgba(255,255,255,0.02); padding: 1.5rem; border-radius: 14px; border: 1px solid rgba(255,255,255,0.06); margin-bottom: 2rem;">
-                    <div class="input-group" style="margin-bottom: 1.2rem;">
-                        <input type="text" id="comment-author" required>
-                        <label>Nama Anda</label>
+                <form id="comment-form" style="background: rgba(255,255,255,0.02); padding: 1.2rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.06); margin-bottom: 1.8rem;">
+                    <div class="form-field-group" style="margin-bottom: 0.9rem;">
+                        <label for="comment-author">Nama Anda</label>
+                        <input type="text" id="comment-author" placeholder="Tulis nama lu" required>
                     </div>
-                    <div class="input-group" style="margin-bottom: 1.2rem;">
-                        <textarea id="comment-text" style="height: 70px;" required></textarea>
-                        <label>Tulis tanggapan atau komentar...</label>
+                    <div class="form-field-group" style="margin-bottom: 0.9rem;">
+                        <label for="comment-text">Tanggapan</label>
+                        <textarea id="comment-text" style="min-height: 80px;" placeholder="Tulis komentar atau opini..." required></textarea>
                     </div>
-                    <button type="submit" class="btn-primary" style="padding: 0.6rem 1.8rem; font-size: 0.85rem; cursor: pointer;">Kirim Komentar</button>
+                    <button type="submit" class="btn-primary" style="padding: 0.6rem 1.6rem; font-size: 0.85rem; cursor: pointer;">Kirim Komentar</button>
                 </form>
 
-                <div id="comments-list" style="display: flex; flex-direction: column; gap: 1rem;">
+                <div id="comments-list" style="display: flex; flex-direction: column; gap: 0.8rem;">
                     <p style="color: var(--light-grey); font-size: 0.85rem;">Memuat tanggapan...</p>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Kustom Konfirmasi Hapus Komentar (Layer Paling Atas z-index 10000) -->
+    <div id="confirm-comment-modal" class="modal" style="z-index: 10000;">
+        <div class="modal-content dialog-modal-content">
+            <div style="width: 46px; height: 46px; border-radius: 50%; background: rgba(255, 71, 87, 0.15); display: inline-flex; align-items: center; justify-content: center; margin-bottom: 0.8rem;">
+                <i class="fas fa-trash-can" style="color: #ff4757; font-size: 1.2rem;"></i>
+            </div>
+            <h2 style="font-size: 1.25rem; color: var(--text-color); margin-bottom: 0.4rem;">Hapus Komentar?</h2>
+            <p id="confirm-comment-desc" style="color: var(--light-grey); font-size: 0.85rem; line-height: 1.5; margin-bottom: 1.5rem;">Tanggapan ini akan dihapus secara permanen dari database.</p>
+            <div style="display: flex; gap: 0.8rem; justify-content: center;">
+                <button id="cancel-delete-comment" type="button" class="btn-secondary" style="flex: 1; padding: 0.65rem 1rem; font-size: 0.85rem; border-radius: 50px; cursor: pointer;">Batal</button>
+                <button id="execute-delete-comment" type="button" class="btn-primary" style="flex: 1; background: #ff4757; border-color: #ff4757; color: #fff; padding: 0.65rem 1rem; font-size: 0.85rem; border-radius: 50px; cursor: pointer;">Hapus</button>
             </div>
         </div>
     </div>
@@ -334,15 +465,16 @@
 
     <script src="script.js"></script>
 
-    <!-- FIREBASE INLINE SCRIPT WITH EASTER EGG AUTH -->
+    <!-- FIREBASE INLINE SCRIPT -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
         import { getFirestore, collection, addDoc, doc, updateDoc, deleteDoc, getDocs, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-        // PIN RAHASIA ADMIN
         const ADMIN_PIN = "erick2026";
         let isAdminLoggedIn = false;
         let currentPostExistingImage = "";
+        let inlineImagesMap = {};
+        let pendingCommentDelete = null;
 
         const firebaseConfig = {
             apiKey: "AIzaSyCz0jZPPYF1-Vqr4_9C84IM_xKAb1C9-Ww",
@@ -361,6 +493,16 @@
         let activePostId = null;
         let unsubscribeComments = null;
 
+        // EKSPOS FUNGSI KE WINDOW SUPAYA ONCLICK TOMBOL SELALU TERPANGGIL
+        window.promptDeleteComment = function(postId, commentId, authorName) {
+            pendingCommentDelete = { postId, commentId, author: authorName };
+            document.getElementById("confirm-comment-desc").innerText = `Hapus komentar dari "${authorName}" secara permanen?`;
+            
+            const confirmModal = document.getElementById("confirm-comment-modal");
+            confirmModal.style.display = "block";
+            setTimeout(() => confirmModal.classList.add("show"), 10);
+        };
+
         function getShareableUrl() {
             if (window.location.protocol === 'file:' || !window.location.origin || window.location.origin === "null") {
                 return "https://www.erickfaturahman.tech/blog.html";
@@ -368,7 +510,50 @@
             return window.location.origin + window.location.pathname;
         }
 
-        // Render Tombol Admin di Bawah saat Sesi Terbuka
+        // Render Teks & Render Foto Inline
+        function renderFormattedContent(rawText, inlineImgs = {}) {
+            const container = document.getElementById("read-content");
+            container.innerHTML = "";
+
+            const regex = /(\[FOTO_\d+\]|!\[.*?\]\(data:image\/[a-zA-Z]+;base64,[^)]+\))/g;
+            const parts = rawText.split(regex);
+
+            parts.forEach(part => {
+                if (!part) return;
+
+                if (part.startsWith("[FOTO_") && part.endsWith("]")) {
+                    const imgSrc = inlineImgs[part];
+                    if (imgSrc) {
+                        const img = document.createElement("img");
+                        img.src = imgSrc;
+                        img.className = "article-inline-image";
+                        img.alt = "Foto Narasi";
+                        container.appendChild(img);
+                        return;
+                    }
+                }
+
+                const legacyMatch = part.match(/!\[.*?\]\((data:image\/[a-zA-Z]+;base64,[^)]+)\)/);
+                if (legacyMatch) {
+                    const img = document.createElement("img");
+                    img.src = legacyMatch[1];
+                    img.className = "article-inline-image";
+                    img.alt = "Foto Sisipan";
+                    container.appendChild(img);
+                    return;
+                }
+
+                if (part.trim() !== "") {
+                    const p = document.createElement("p");
+                    p.style.whiteSpace = "pre-line";
+                    p.style.marginBottom = "1.2rem";
+                    p.innerText = part;
+                    container.appendChild(p);
+                }
+            });
+        }
+
+        // Render Tombol Admin di Footer
         function renderAdminFooterUI() {
             const container = document.getElementById("admin-actions-container");
 
@@ -398,7 +583,7 @@
             }
         }
 
-        // Fetch & Render Semua Artikel
+        // Fetch & Render Artikel Grid
         async function fetchAndRenderPosts() {
             const grid = document.getElementById("blog-grid");
             if (!grid) return;
@@ -429,7 +614,6 @@
 
                     const imgThumb = post.image ? `<div style="width: 100%; height: 180px; border-radius: 12px; overflow: hidden; margin-bottom: 1.5rem; position: relative; z-index: 1;"><img src="${post.image}" style="width: 100%; height: 100%; object-fit: cover; display: block;"></div>` : "";
 
-                    // Tombol Edit dan Hapus hanya tampil jika admin aktif
                     const adminButtons = isAdminLoggedIn ? `
                         <button class="card-edit-btn" title="Edit Artikel" type="button">
                             <i class="fas fa-pen"></i>
@@ -439,6 +623,11 @@
                         </button>
                     ` : '';
 
+                    const cleanPreview = post.content
+                        .replace(/!\[.*?\]\([^)]+\)/g, "[Foto]")
+                        .replace(/\[FOTO_\d+\]/g, "[Foto]")
+                        .substring(0, 110);
+
                     card.innerHTML = `
                         <div class="card-main-content" style="width: 100%; overflow: hidden;">
                             ${imgThumb}
@@ -447,7 +636,7 @@
                                 <span style="font-size: 0.8rem; color: var(--light-grey); white-space: nowrap;">${post.readTime}</span>
                             </div>
                             <h2 style="font-size: 1.3rem; margin-bottom: 0.8rem; line-height: 1.4; word-break: break-word;">${post.title}</h2>
-                            <p style="color: var(--light-grey); font-size: 0.9rem; line-height: 1.6; margin-bottom: 1.5rem; word-break: break-word; overflow-wrap: anywhere;">${post.content.substring(0, 110)}...</p>
+                            <p style="color: var(--light-grey); font-size: 0.9rem; line-height: 1.6; margin-bottom: 1.5rem; word-break: break-word; overflow-wrap: anywhere;">${cleanPreview}...</p>
                         </div>
 
                         <div class="blog-card-bottom">
@@ -527,13 +716,20 @@
             document.getElementById("post-title").value = post.title;
             document.getElementById("post-category").value = post.category;
             document.getElementById("post-read").value = post.readTime;
-            document.getElementById("post-content").value = post.content;
             document.getElementById("post-image").value = "";
             currentPostExistingImage = post.image || "";
 
-            document.querySelectorAll("#write-modal .input-group input, #write-modal .input-group textarea").forEach(input => {
-                if (input.value !== "") input.classList.add("has-content");
+            inlineImagesMap = post.inlineImages ? { ...post.inlineImages } : {};
+
+            let contentText = post.content || "";
+            let counter = Object.keys(inlineImagesMap).length + 1;
+            contentText = contentText.replace(/!\[.*?\]\((data:image\/[a-zA-Z]+;base64,[^)]+)\)/g, (match, base64Str) => {
+                const token = `[FOTO_${counter++}]`;
+                inlineImagesMap[token] = base64Str;
+                return token;
             });
+
+            document.getElementById("post-content").value = contentText;
 
             writeModal.style.display = "block";
             setTimeout(() => writeModal.classList.add("show"), 10);
@@ -547,11 +743,7 @@
             document.getElementById("edit-doc-id").value = "";
             postForm.reset();
             currentPostExistingImage = "";
-
-            document.querySelectorAll("#write-modal .input-group input, #write-modal .input-group textarea").forEach(input => {
-                input.classList.remove("has-content");
-            });
-
+            inlineImagesMap = {};
             document.getElementById("post-read").value = "4 min read";
 
             writeModal.style.display = "block";
@@ -559,13 +751,14 @@
             document.body.style.overflow = "hidden";
         }
 
-        // Buka Modal Baca
+        // Buka Modal Baca + Render Komentar
         function openReadModal(post, postId, scrollToComments = false) {
             activePostId = postId;
             document.getElementById("read-title").innerText = post.title;
             document.getElementById("read-category").innerText = post.category;
             document.getElementById("read-meta").innerText = `${post.date} • ${post.readTime}`;
-            document.getElementById("read-content").innerText = post.content;
+
+            renderFormattedContent(post.content, post.inlineImages || {});
 
             const imgWrap = document.getElementById("read-img-wrapper");
             const imgTag = document.getElementById("read-image");
@@ -605,17 +798,31 @@
                     return;
                 }
 
-                snapshot.forEach((doc) => {
-                    const c = doc.data();
+                snapshot.forEach((commentDoc) => {
+                    const c = commentDoc.data();
+                    const commentId = commentDoc.id;
                     const item = document.createElement("div");
-                    item.style.cssText = "background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); padding: 1rem 1.2rem; border-radius: 12px;";
+                    item.style.cssText = "background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); padding: 0.9rem 1rem; border-radius: 10px;";
+                    
+                    // Tombol Hapus memanggil fungsi global via inline onclick
+                    const safeAuthor = (c.author || "").replace(/'/g, "\\'");
+                    const deleteCommentBtnHtml = isAdminLoggedIn ? `
+                        <button class="comment-delete-btn" type="button" onclick="event.stopPropagation(); window.promptDeleteComment('${postId}', '${commentId}', '${safeAuthor}')" title="Hapus Komentar Ini">
+                            <i class="fas fa-trash-can"></i> Hapus
+                        </button>
+                    ` : '';
+
                     item.innerHTML = `
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
-                            <span style="font-weight: 600; font-size: 0.9rem; color: var(--text-color);"><i class="fas fa-circle-user" style="color: var(--accent-color); margin-right: 0.4rem;"></i> ${c.author}</span>
-                            <span style="font-size: 0.75rem; color: var(--light-grey);">${c.timeString}</span>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <span style="font-weight: 600; font-size: 0.88rem; color: var(--text-color);"><i class="fas fa-circle-user" style="color: var(--accent-color); margin-right: 0.3rem;"></i> ${c.author}</span>
+                                <span style="font-size: 0.72rem; color: var(--light-grey);">${c.timeString}</span>
+                            </div>
+                            ${deleteCommentBtnHtml}
                         </div>
-                        <p style="color: var(--light-grey); font-size: 0.88rem; line-height: 1.5; word-break: break-word;">${c.text}</p>
+                        <p style="color: var(--light-grey); font-size: 0.85rem; line-height: 1.5; word-break: break-word;">${c.text}</p>
                     `;
+
                     list.appendChild(item);
                 });
             });
@@ -634,7 +841,32 @@
             document.body.style.overflow = "hidden";
         }
 
-        // Komentar
+        // Eksekusi Hapus Komentar dari Modal Kustom
+        document.getElementById("cancel-delete-comment").onclick = () => {
+            closeModal(document.getElementById("confirm-comment-modal"));
+            pendingCommentDelete = null;
+        };
+
+        document.getElementById("execute-delete-comment").onclick = async () => {
+            if (pendingCommentDelete) {
+                const execBtn = document.getElementById("execute-delete-comment");
+                execBtn.innerText = "Menghapus...";
+                execBtn.disabled = true;
+
+                try {
+                    await deleteDoc(doc(db, "posts", pendingCommentDelete.postId, "comments", pendingCommentDelete.commentId));
+                    closeModal(document.getElementById("confirm-comment-modal"));
+                    pendingCommentDelete = null;
+                } catch (err) {
+                    alert("Gagal menghapus komentar: " + err.message);
+                } finally {
+                    execBtn.innerText = "Hapus";
+                    execBtn.disabled = false;
+                }
+            }
+        };
+
+        // Kirim Komentar Baru
         const commentForm = document.getElementById("comment-form");
         if (commentForm) {
             commentForm.addEventListener("submit", async function(e) {
@@ -661,7 +893,6 @@
                     });
 
                     textInput.value = "";
-                    textInput.classList.remove("has-content");
                 } catch (error) {
                     console.error("Gagal kirim komentar:", error);
                     alert("Gagal mengirim tanggapan.");
@@ -695,7 +926,6 @@
             document.body.style.overflow = "hidden";
         }
 
-        // Trigger Rahasia 1: Dobel-klik logo PORTFOLIO. di navbar
         const logoElement = document.querySelector(".navbar .logo");
         if (logoElement) {
             logoElement.addEventListener("dblclick", (e) => {
@@ -704,7 +934,6 @@
             });
         }
 
-        // Trigger Rahasia 2: Klik 3x cepat pada teks copyright footer
         const footerText = document.querySelector("footer p");
         let footerClicks = 0;
         let footerTimer = null;
@@ -721,7 +950,6 @@
             });
         }
 
-        // Validasi PIN Form
         if (pinForm) {
             pinForm.addEventListener("submit", (e) => {
                 e.preventDefault();
@@ -751,6 +979,7 @@
             if (e.target === pinModal) closeModal(pinModal);
             if (e.target === writeModal) closeModal(writeModal);
             if (e.target === document.getElementById("read-modal")) closeReaderModal();
+            if (e.target === document.getElementById("confirm-comment-modal")) closeModal(document.getElementById("confirm-comment-modal"));
         });
 
         function closeModal(targetModal) {
@@ -790,6 +1019,51 @@
             });
         }
 
+        // SISTEM TOKEN BERSIH [FOTO_N] DI TEXTAREA
+        const btnInsertImg = document.getElementById("btn-insert-img");
+        const fileInsertInput = document.getElementById("insert-inline-img");
+        const contentArea = document.getElementById("post-content");
+        let savedCursorPos = 0;
+
+        if (btnInsertImg && fileInsertInput) {
+            btnInsertImg.addEventListener("click", () => {
+                savedCursorPos = (contentArea.selectionStart !== undefined) ? contentArea.selectionStart : contentArea.value.length;
+                fileInsertInput.click();
+            });
+
+            fileInsertInput.addEventListener("change", async (e) => {
+                if (e.target.files && e.target.files[0]) {
+                    btnInsertImg.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Mengompres...`;
+                    btnInsertImg.disabled = true;
+
+                    try {
+                        const base64 = await compressImage(e.target.files[0], 750, 0.7);
+
+                        let tokenIndex = 1;
+                        while (inlineImagesMap[`[FOTO_${tokenIndex}]`]) {
+                            tokenIndex++;
+                        }
+                        const tokenKey = `[FOTO_${tokenIndex}]`;
+                        inlineImagesMap[tokenKey] = base64;
+
+                        const insertionText = `\n\n${tokenKey}\n\n`;
+                        const fullText = contentArea.value;
+                        contentArea.value = fullText.substring(0, savedCursorPos) + insertionText + fullText.substring(savedCursorPos);
+
+                        contentArea.focus();
+                        const nextPos = savedCursorPos + insertionText.length;
+                        contentArea.setSelectionRange(nextPos, nextPos);
+                    } catch (err) {
+                        alert("Gagal menyisipkan gambar.");
+                    } finally {
+                        btnInsertImg.innerHTML = `<i class="fas fa-image" style="color: var(--accent-color); margin-right: 0.3rem;"></i> + Sisipkan Foto di Kursor`;
+                        btnInsertImg.disabled = false;
+                        fileInsertInput.value = "";
+                    }
+                }
+            });
+        }
+
         // Submit Form (Tambah / Edit)
         if (postForm) {
             postForm.addEventListener("submit", async function(e) {
@@ -818,13 +1092,21 @@
                         base64Img = await compressImage(fileInput.files[0]);
                     }
 
+                    const cleanedInlineImages = {};
+                    for (const [key, val] of Object.entries(inlineImagesMap)) {
+                        if (content.includes(key)) {
+                            cleanedInlineImages[key] = val;
+                        }
+                    }
+
                     if (editDocId) {
                         await updateDoc(doc(db, "posts", editDocId), {
                             title: title,
                             category: category,
                             readTime: readTime,
                             content: content,
-                            image: base64Img
+                            image: base64Img,
+                            inlineImages: cleanedInlineImages
                         });
                     } else {
                         const now = new Date();
@@ -838,11 +1120,13 @@
                             date: dateStr,
                             content: content,
                             image: base64Img,
+                            inlineImages: cleanedInlineImages,
                             timestamp: Date.now()
                         });
                     }
 
                     postForm.reset();
+                    inlineImagesMap = {};
                     closeModal(writeModal);
                     fetchAndRenderPosts();
                 } catch (error) {
