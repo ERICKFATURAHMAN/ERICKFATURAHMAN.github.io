@@ -40,8 +40,170 @@
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
-    <!-- CSS Isolasi Tombol Aksi, Moderasi Komentar, dan Gambar Inline -->
+    <!-- CSS Isolasi Tombol Aksi, Moderasi Komentar, Gambar Inline, dan Animasi Interaktif -->
     <style>
+        /* Container Stage Animasi Kosmik */
+        .interactive-video-stage {
+            position: relative;
+            max-width: 860px;
+            margin: 2.5rem auto 1.5rem;
+            width: 100%;
+        }
+
+        /* Border Neon Berpendar di Sekitar Video */
+        .blog-video-wrapper {
+            position: relative;
+            width: 100%;
+            background: linear-gradient(135deg, rgba(108, 92, 231, 0.25), rgba(255, 71, 87, 0.15), rgba(0, 210, 211, 0.2));
+            padding: 4px;
+            border-radius: 22px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6), 0 0 25px rgba(108, 92, 231, 0.25);
+            animation: borderPulse 6s ease-in-out infinite alternate;
+            z-index: 2;
+        }
+
+        @keyframes borderPulse {
+            0% { box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6), 0 0 20px rgba(108, 92, 231, 0.25); }
+            50% { box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6), 0 0 35px rgba(255, 71, 87, 0.35); }
+            100% { box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6), 0 0 25px rgba(0, 210, 211, 0.3); }
+        }
+
+        .video-inner-box {
+            background: #111114;
+            border-radius: 18px;
+            padding: 0.8rem;
+        }
+
+        .video-container {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%; /* Rasio 16:9 */
+            height: 0;
+            border-radius: 14px;
+            overflow: hidden;
+            background: #000;
+        }
+
+        .video-container video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: block;
+            object-fit: cover;
+        }
+
+        .video-caption {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.6rem;
+            margin-top: 0.85rem;
+            color: var(--light-grey);
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .video-caption i {
+            color: var(--accent-color);
+            animation: pulseIcon 1.5s infinite;
+        }
+
+        @keyframes pulseIcon {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.25); opacity: 1; }
+        }
+
+        /* --- Elemen Interaktif Melayang --- */
+        /* 1. Roket Meluncur */
+        .cosmic-rocket {
+            position: absolute;
+            font-size: 2.2rem;
+            z-index: 5;
+            pointer-events: none;
+            filter: drop-shadow(0 0 12px rgba(255, 159, 67, 0.8));
+            animation: rocketFlight 14s linear infinite;
+        }
+
+        @keyframes rocketFlight {
+            0% {
+                transform: translate(-120px, 280px) rotate(45deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            85% {
+                opacity: 1;
+            }
+            100% {
+                transform: translate(950px, -220px) rotate(45deg);
+                opacity: 0;
+            }
+        }
+
+        /* 2. Bola / Planet Mengambang */
+        .floating-orb {
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 1;
+            filter: blur(0.5px);
+        }
+
+        .orb-1 {
+            width: 55px;
+            height: 55px;
+            top: -25px;
+            left: -25px;
+            background: radial-gradient(circle at 30% 30%, #a29bfe, #6c5ce7 60%, #2d3436);
+            box-shadow: 0 0 25px rgba(108, 92, 231, 0.6);
+            animation: orbBounce1 6s ease-in-out infinite alternate;
+        }
+
+        .orb-2 {
+            width: 42px;
+            height: 42px;
+            bottom: -15px;
+            right: -20px;
+            background: radial-gradient(circle at 35% 35%, #ff7675, #d63031 70%, #2d3436);
+            box-shadow: 0 0 20px rgba(255, 118, 117, 0.6);
+            animation: orbBounce2 5s ease-in-out infinite alternate;
+        }
+
+        @keyframes orbBounce1 {
+            0% { transform: translateY(0) rotate(0deg); }
+            100% { transform: translateY(-22px) rotate(40deg); }
+        }
+
+        @keyframes orbBounce2 {
+            0% { transform: translateY(0) rotate(0deg); }
+            100% { transform: translateY(18px) rotate(-35deg); }
+        }
+
+        /* 3. Bintang Kelap-Kelip */
+        .twinkle-star {
+            position: absolute;
+            color: #ffd32a;
+            font-size: 0.9rem;
+            pointer-events: none;
+            z-index: 4;
+            animation: starTwinkle 2.5s ease-in-out infinite alternate;
+        }
+
+        .star-1 { top: -15px; right: 80px; animation-delay: 0.2s; font-size: 1.1rem; }
+        .star-2 { bottom: 25px; left: -30px; animation-delay: 1.1s; font-size: 0.8rem; color: #00d2d3; }
+        .star-3 { top: 60%; right: -25px; animation-delay: 1.8s; font-size: 1rem; color: #ff9ff3; }
+
+        @keyframes starTwinkle {
+            0% { transform: scale(0.4); opacity: 0.2; }
+            50% { transform: scale(1.3) rotate(20deg); opacity: 1; filter: drop-shadow(0 0 8px currentColor); }
+            100% { transform: scale(0.6); opacity: 0.3; }
+        }
+
+        /* Bagian Card Blog & Kontrol */
         .blog-card-bottom {
             display: flex;
             align-items: center;
@@ -140,7 +302,7 @@
             color: #ffffff !important;
         }
 
-        /* Modal Dialog Box Kustom */
+        /* Modal Dialog Box */
         .dialog-modal-content {
             max-width: 400px;
             text-align: center;
@@ -236,7 +398,6 @@
             display: block;
         }
 
-        /* Styling Heading On-Page SEO pada Narasi */
         .article-heading-seo {
             color: var(--text-color);
             font-size: clamp(1.2rem, 2.5vw, 1.45rem);
@@ -270,6 +431,16 @@
         }
 
         @media (max-width: 768px) {
+            .interactive-video-stage {
+                margin: 1.8rem auto 0.8rem;
+                padding: 0 0.5rem;
+            }
+            .cosmic-rocket {
+                font-size: 1.6rem;
+            }
+            .orb-1 { width: 38px; height: 38px; left: -10px; top: -15px; }
+            .orb-2 { width: 28px; height: 28px; right: -8px; bottom: -8px; }
+
             .modal {
                 padding: 1rem 0.6rem !important;
             }
@@ -328,11 +499,42 @@
     </nav>
 
     <!-- Header Section -->
-    <section class="blog-hero" style="padding: 10rem 8% 2rem; text-align: center;">
+    <section class="blog-hero" style="padding: 10rem 8% 1.5rem; text-align: center;">
         <div class="container">
             <p class="greeting" style="margin-bottom: 0.5rem;">Insights & Thoughts</p>
             <h1 class="headline" style="font-size: clamp(2.5rem, 5vw, 4rem); margin-bottom: 1rem;">Digital Marketing & Tech Notes</h1>
             <p class="sub-headline" style="margin: 0 auto; max-width: 600px;">Wadah praktik strategi konten, SEO, dan dokumentasi pengalaman perkuliahan.</p>
+
+            <!-- Panggung Video Interaktif Kosmik -->
+            <div class="interactive-video-stage">
+                <!-- Roket Meluncur Berkala -->
+                <div class="cosmic-rocket">🚀</div>
+
+                <!-- Planet / Bola Kosmik -->
+                <div class="floating-orb orb-1"></div>
+                <div class="floating-orb orb-2"></div>
+
+                <!-- Bintang Kelap-Kelip -->
+                <i class="fas fa-star twinkle-star star-1"></i>
+                <i class="fas fa-sparkles twinkle-star star-2"></i>
+                <i class="fas fa-star twinkle-star star-3"></i>
+
+                <!-- Wadah Video dengan Garis Border Glow -->
+                <div class="blog-video-wrapper">
+                    <div class="video-inner-box">
+                        <div class="video-container">
+                            <video id="blog-intro-video" controls playsinline preload="metadata">
+                                <source src="perkenalan.mp4" type="video/mp4">
+                                Browser Anda tidak mendukung pemutar video.
+                            </video>
+                        </div>
+                        <div class="video-caption">
+                            <i class="fas fa-circle-play"></i>
+                            <span>Video Pengantar & Latar Belakang Rubrik Blog</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
 
@@ -525,6 +727,19 @@
 
         let activePostId = null;
         let unsubscribeComments = null;
+
+        // Integrasi Pelacakan Event Pemutaran Video ke GA4
+        const introVid = document.getElementById("blog-intro-video");
+        if (introVid) {
+            introVid.addEventListener("play", () => {
+                if (typeof gtag === 'function') {
+                    gtag('event', 'video_start', {
+                        video_title: 'Video Pengantar Rubrik Blog',
+                        video_provider: 'HTML5 Native'
+                    });
+                }
+            });
+        }
 
         // Prompt Hapus Komentar
         window.promptDeleteComment = function(postId, commentId, authorName) {
