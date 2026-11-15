@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daftar Mitra Resto — NOMO (No More Waste)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    </style>
+</head>
+<body class="bg-[#F6F8F7] min-h-screen flex items-center justify-center p-3 sm:p-6 overflow-x-hidden">
+
+    <div class="w-full max-w-5xl bg-white rounded-3xl sm:rounded-[32px] shadow-xl shadow-black/5 border border-gray-200/80 overflow-hidden grid grid-cols-1 lg:grid-cols-12 lg:min-h-[580px]">
+        
+        <!-- Kiri -->
+        <div class="lg:col-span-5 bg-[#0B533E] p-6 sm:p-10 text-white flex flex-col justify-between">
+            <div id="reg-logo"></div>
+
+            <div class="my-5 sm:my-8 space-y-4">
+                <h1 class="text-2xl sm:text-3xl font-extrabold leading-tight">
+                    Bergabung dengan Ekosistem Dapur Nol Sampah.
+                </h1>
+                <div class="space-y-2.5 text-xs text-emerald-100">
+                    <div class="flex items-start gap-2.5">
+                        <div class="w-5 h-5 rounded-full bg-white/15 flex items-center justify-center shrink-0 mt-0.5"><i data-lucide="check" class="w-3 h-3"></i></div>
+                        <span>Deteksi otomatis kerugian bahan baku dapur (Profit Leakage).</span>
+                    </div>
+                    <div class="flex items-start gap-2.5">
+                        <div class="w-5 h-5 rounded-full bg-white/15 flex items-center justify-center shrink-0 mt-0.5"><i data-lucide="check" class="w-3 h-3"></i></div>
+                        <span>Rekomendasi belanja AI berbasis tren limbah mingguan.</span>
+                    </div>
+                    <div class="flex items-start gap-2.5">
+                        <div class="w-5 h-5 rounded-full bg-white/15 flex items-center justify-center shrink-0 mt-0.5"><i data-lucide="check" class="w-3 h-3"></i></div>
+                        <span>Penjemputan limbah organik terjadwal ke peternak maggot BSF.</span>
+                    </div>
+                </div>
+            </div>
+
+            <p class="text-[11px] text-emerald-200/80">Gratis onboarding & kalibrasi master HPP bahan baku.</p>
+        </div>
+
+        <!-- Kanan: Form -->
+        <div class="lg:col-span-7 p-6 sm:p-10 lg:p-12 flex flex-col justify-center">
+            <div class="max-w-md mx-auto w-full">
+                <h2 class="text-xl sm:text-2xl font-extrabold text-[#111827]">Daftarkan Restoran Anda</h2>
+                <p class="text-xs text-gray-500 mt-1 mb-5">Data ini akan langsung tampil di dashboard operasional Anda.</p>
+
+                <form onsubmit="handleRegister(event)" class="space-y-3.5 sm:space-y-4">
+                    <div>
+                        <label class="block text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1">Nama Restoran / Kafe</label>
+                        <input type="text" id="r-name" placeholder="Contoh: Kedai Kopi & Nasi Braga" required class="w-full px-4 py-3 rounded-2xl border border-gray-200 bg-[#F6F8F7] focus:bg-white focus:ring-2 focus:ring-[#0B533E] outline-none text-sm font-semibold text-[#111827]">
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5 sm:gap-4">
+                        <div>
+                            <label class="block text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1">Nama Penanggung Jawab</label>
+                            <input type="text" id="r-owner" placeholder="Nama Manager / Owner" required class="w-full px-4 py-3 rounded-2xl border border-gray-200 bg-[#F6F8F7] focus:bg-white focus:ring-2 focus:ring-[#0B533E] outline-none text-sm font-semibold text-[#111827]">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1">Email Bisnis</label>
+                            <input type="email" id="r-email" placeholder="halo@restoran.id" required class="w-full px-4 py-3 rounded-2xl border border-gray-200 bg-[#F6F8F7] focus:bg-white focus:ring-2 focus:ring-[#0B533E] outline-none text-sm font-semibold text-[#111827]">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1">Alamat Penjemputan Limbah</label>
+                        <input type="text" id="r-loc" placeholder="Jl. Riau No. 88, Bandung" required class="w-full px-4 py-3 rounded-2xl border border-gray-200 bg-[#F6F8F7] focus:bg-white focus:ring-2 focus:ring-[#0B533E] outline-none text-sm font-semibold text-[#111827]">
+                    </div>
+
+                    <div>
+                        <label class="block text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1">Password</label>
+                        <input type="password" minlength="6" placeholder="Minimal 6 karakter" required class="w-full px-4 py-3 rounded-2xl border border-gray-200 bg-[#F6F8F7] focus:bg-white focus:ring-2 focus:ring-[#0B533E] outline-none text-sm font-semibold text-[#111827]">
+                    </div>
+
+                    <button type="submit" class="w-full bg-[#111827] hover:bg-black text-white font-bold py-3.5 sm:py-4 rounded-full shadow-lg shadow-black/10 transition flex items-center justify-center gap-2 text-sm mt-2">
+                        <span>Buat Akun Mitra</span>
+                        <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </button>
+                </form>
+
+                <p class="text-center text-xs text-gray-500 mt-5 sm:mt-6">
+                    Sudah punya akun? <a href="index.html" class="font-extrabold text-[#0B533E] hover:underline">Masuk di sini</a>
+                </p>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="nomo-app.js"></script>
+    <script>
+        document.getElementById('reg-logo').innerHTML = getNomoLogoSVG('light');
+        lucide.createIcons();
+
+        function handleRegister(e) {
+            e.preventDefault();
+            const state = getNomoData();
+            state.resto.name = document.getElementById('r-name').value;
+            state.resto.owner = document.getElementById('r-owner').value;
+            state.resto.email = document.getElementById('r-email').value;
+            state.resto.location = document.getElementById('r-loc').value;
+            saveNomoData(state);
+            window.location.href = 'dashboard.html';
+        }
+    </script>
+</body>
+</html>

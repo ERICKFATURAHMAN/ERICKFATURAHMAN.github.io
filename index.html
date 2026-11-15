@@ -3,349 +3,225 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <!-- SEO & Open Graph -->
-    <meta property="og:title" content="Erick - UI/UX & Web Developer Portfolio">
-    <meta property="og:description" content="Spesialis desain antarmuka, pengembangan web, dan visual storytelling. Lihat karya terbaik saya di sini.">
-    <meta property="og:image" content="erik.jpeg">
-    <meta property="og:url" content="https://www.erickfaturahman.tech/">
-    
-    <title>Portofolio Desainer Grafis & UI/UX Engineer</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>Masuk Mitra — NOMO (No More Waste)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+
+        @keyframes splashLogoReveal {
+            0% {
+                opacity: 0;
+                transform: scale(0.86) translateY(12px);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        @keyframes splashTextReveal {
+            0% {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes splashBarFill {
+            0% { width: 0%; }
+            100% { width: 100%; }
+        }
+
+        .animate-splash-logo {
+            animation: splashLogoReveal 0.75s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .animate-splash-sub {
+            opacity: 0;
+            animation: splashTextReveal 0.65s cubic-bezier(0.16, 1, 0.3, 1) 0.25s forwards;
+        }
+
+        .animate-splash-bar {
+            animation: splashBarFill 1.55s cubic-bezier(0.65, 0, 0.35, 1) 0.15s forwards;
+        }
+    </style>
 </head>
-<body>
-    <!-- Cursor Kustom -->
-    <div class="cursor"></div>
-    <div class="cursor2"></div>
+<body class="bg-[#F6F8F7] min-h-screen flex items-center justify-center p-3 sm:p-6 overflow-x-hidden">
 
-    <!-- Navigasi -->
-    <nav class="navbar">
-        <div class="logo">PORTFOLIO.</div>
-        <ul class="nav-links">
-            <li><a href="#home">Home</a></li>
-            <li><a href="#about">About</a></li>
-            <li><a href="#portfolio">Work</a></li>
-            <li><a href="blog.html">Blog</a></li>
-            <li><a href="#testimonials">Feedback</a></li>
-            <li><a href="#contact">Contact</a></li>
-        </ul>
+    <!-- ========================================================= -->
+    <!-- SPLASH SCREEN INTRO ANIMATION                             -->
+    <!-- ========================================================= -->
+    <div id="intro-splash" onclick="dismissSplash()" title="Klik untuk melewati" class="fixed inset-0 z-50 bg-[#0B533E] flex flex-col items-center justify-center px-6 cursor-pointer transition-all duration-500 ease-out">
+        <div class="absolute -right-20 -top-20 w-80 h-80 rounded-full bg-emerald-400/10 blur-3xl pointer-events-none"></div>
+        <div class="absolute -left-20 -bottom-20 w-80 h-80 rounded-full bg-black/25 blur-3xl pointer-events-none"></div>
+
+        <div class="relative z-10 flex flex-col items-center text-center">
+            <!-- Logo Utama -->
+            <div id="splash-logo" class="animate-splash-logo scale-125 sm:scale-150 mb-6"></div>
+
+            <!-- Tagline Singkat -->
+            <p class="animate-splash-sub text-[11px] sm:text-xs font-semibold tracking-wider uppercase text-emerald-200/90">
+                Circular Food Waste & HPP Intelligence
+            </p>
+
+            <!-- Progress Bar Halus -->
+            <div class="animate-splash-sub w-44 sm:w-52 h-1 bg-black/25 rounded-full overflow-hidden mt-5">
+                <div class="h-full bg-emerald-300 rounded-full animate-splash-bar"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================================= -->
+    <!-- KARTU LOGIN UTAMA                                         -->
+    <!-- ========================================================= -->
+    <div id="login-card" class="w-full max-w-5xl bg-white rounded-3xl sm:rounded-[32px] shadow-xl shadow-black/5 border border-gray-200/80 overflow-hidden grid grid-cols-1 lg:grid-cols-12 lg:min-h-[540px] opacity-0 translate-y-4 scale-[0.98] transition-all duration-700 ease-out">
         
-        <!-- Music Toggle -->
-        <div class="music-control">
-            <button id="music-btn" class="music-btn" aria-label="Toggle Music">
-                <i class="fas fa-play"></i>
-            </button>
-            <audio id="bg-music" loop>
-                <source src="musek.mp3" type="audio/mp3">
-            </audio>
-        </div>
+        <!-- Kiri: Panel Hijau Tua -->
+        <div class="lg:col-span-6 bg-[#0B533E] p-5 sm:p-10 lg:p-11 text-white flex flex-col justify-between relative overflow-hidden">
+            <div class="absolute -right-16 -top-16 w-64 h-64 rounded-full bg-emerald-400/10 blur-2xl"></div>
+            <div class="absolute -left-16 -bottom-16 w-72 h-72 rounded-full bg-black/20 blur-2xl"></div>
 
-        <div class="burger">
-            <div class="line1"></div>
-            <div class="line2"></div>
-            <div class="line3"></div>
-        </div>
-    </nav>
+            <div id="login-logo" class="relative z-10"></div>
 
-    <!-- Hero Section -->
-    <section id="home" class="hero">
-        <div class="hero-content">
-            <p class="greeting">Halo, saya Erick Faturahman</p>
-            <h1 class="headline">Web<span class="outline-text">Development</span> & <br> Graphic <span class="highlight">Designer</span></h1>
-            <p class="sub-headline">Menjembatani antarmuka yang estetis dengan kegunaan teknis yang kompleks.</p>
-            <div class="hero-buttons">
-                <a href="#portfolio" class="btn-primary">Lihat Karya <i class="fas fa-arrow-right"></i></a>
-                <a href="cv.pdf" class="btn-secondary" download><i class="fas fa-download"></i> Download CV</a>
+            <div class="relative z-10 my-6 sm:my-auto py-4">
+                <h1 id="hero-title" class="text-xl sm:text-3xl lg:text-4xl font-extrabold leading-tight tracking-tight">
+                    Kendalikan Sisa Dapur & Selamatkan Profit Resto.
+                </h1>
+                <p id="hero-desc" class="text-emerald-100/90 text-xs sm:text-sm mt-3 leading-relaxed">
+                    Catat sisa makanan dalam hitungan detik, pantau kebocoran HPP secara real-time, dan salurkan limbah organik ke mitra maggot BSF terdekat.
+                </p>
+            </div>
+
+            <div class="relative z-10 flex items-center justify-between text-[10px] sm:text-[11px] text-emerald-200/80 font-medium">
+                <span>B2B Circular Food Waste SaaS</span>
+                <span>Bandung | Indonesia</span>
             </div>
         </div>
-        <div class="hero-visual">
-            <div class="circle"></div>
-            <div class="image-wrapper">
-                <img src="erik.jpeg" alt="Profile Picture Erick" class="profile-img">
-            </div>
-        </div>
-    </section>
 
-    <!-- Marquee Section -->
-    <div class="marquee-container">
-        <div class="marquee-content">
-            <span>UI/UX ENGINEERING</span> <span class="dot">•</span>
-            <span>IT PROJECT LEAD</span> <span class="dot">•</span>
-            <span>WEB DEVELOPMENT</span> <span class="dot">•</span>
-            <span>GRAPHIC DESIGN</span> <span class="dot">•</span>
-            <span>UI/UX ENGINEERING</span> <span class="dot">•</span>
-            <span>IT PROJECT LEAD</span> <span class="dot">•</span>
-            <span>WEB DEVELOPMENT</span> <span class="dot">•</span>
-            <span>GRAPHIC DESIGN</span> <span class="dot">•</span>
-        </div>
-    </div>
-
-    <!-- About Section -->
-    <section id="about" class="about">
-        <div class="container">
-            <div class="section-title">
-                <h2>Who I Am</h2>
-                <div class="line"></div>
-            </div>
-            <div class="about-content">
-                <div class="about-text">
-                    <p>Saya adalah mahasiswa Sistem Informasi yang memadukan kreativitas desain grafis dengan logika software development. Memiliki rekam jejak dalam memimpin sisi teknis (IT Lead) untuk berbagai proyek pengembangan aplikasi, saya terbiasa menerjemahkan ide-ide visual ke dalam arsitektur kode yang solid. Bagi saya, produk digital yang hebat tidak hanya tentang estetika yang memanjakan mata, tetapi juga sistem yang efisien, skalabel, dan fungsional di baliknya.</p>
-                    
-                    <div class="skills">
-                        <div class="skill-tag">UI/UX Engineering</div>
-                        <div class="skill-tag">IT Project Lead</div>
-                        <div class="skill-tag">Web Development</div>
-                    </div>
-                </div>
-                <div class="stats">
-                    <div class="stat-item">
-                        <h3>3+</h3>
-                        <p>Tahun Pengalaman</p>
-                    </div>
-                    <div class="stat-item">
-                        <h3>10+</h3>
-                        <p>Proyek Desain & Web</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Services Section -->
-    <section id="services" class="services">
-        <div class="container">
-            <div class="section-title">
-                <h2>Services</h2>
-                <div class="line"></div>
-            </div>
-            <div class="services-grid">
-                <div class="service-card">
-                    <i class="fas fa-layer-group"></i>
-                    <h3>UI/UX Design</h3>
-                    <p>User Research, Wireframing, Prototyping, & Interface Design.</p>
-                </div>
-                <div class="service-card">
-                    <i class="fas fa-code"></i>
-                    <h3>Web Development</h3>
-                    <p>Front-End Development, Landing Pages, & Dashboard Admin.</p>
-                </div>
-                <div class="service-card">
-                    <i class="fas fa-pen-nib"></i>
-                    <h3>Graphic Design</h3>
-                    <p>Social Media Campaign, Event Banners, & Visual Branding.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Portfolio Section -->
-    <section id="portfolio" class="portfolio">
-        <div class="container">
-            <div class="section-title">
-                <h2>Selected Works</h2>
-                <div class="line"></div>
-            </div>
-            
-            <div class="filter-buttons">
-                <button class="filter-btn active" data-filter="all">All</button>
-                <button class="filter-btn" data-filter="webdev">Web App</button>
-                <button class="filter-btn" data-filter="graphic">Graphic Design</button>
-            </div>
-
-            <div class="gallery">
-                <!-- Item 1: Teduh -->
-                <div class="gallery-item" data-category="webdev" 
-                     data-title="Web App Teduh" 
-                     data-desc="Platform web terintegrasi Machine Learning untuk deteksi dini tingkat stres. Memanfaatkan algoritma Random Forest Classifier untuk menganalisis 13 indikator metrik."
-                     data-problem="Menerjemahkan data hasil prediksi AI yang kompleks menjadi antarmuka web yang empatik, menenangkan, dan tidak mengintimidasi pengguna."
-                     data-process="Merancang prototipe psikologis di Figma, menerjemahkannya dengan HTML & Tailwind CSS, dan menghubungkannya dengan endpoint API prediksi."
-                     data-solution="Dashboard interaktif yang menampilkan hasil deteksi beserta faktor pemicu utama stres secara real-time dan mudah dipahami.">
-                    <div class="image-placeholder gradient-1">
-                        <img src="./teduh.png" alt="Aplikasi Teduh" class="gallery-img-overlay">
-                    </div>
-                    <div class="overlay">
-                        <h3>Sistem Teduh</h3>
-                        <p>Web App - Klik untuk Detail</p>
-                    </div>
+        <!-- Kanan: Form Masuk + Pilihan Peran -->
+        <div class="lg:col-span-6 p-5 sm:p-10 lg:p-12 flex flex-col justify-center bg-white">
+            <div class="max-w-sm mx-auto w-full">
+                
+                <!-- Role Switcher Segmented Control -->
+                <div class="grid grid-cols-2 gap-1 bg-[#F6F8F7] p-1 rounded-full border border-gray-200/80 mb-5">
+                    <button type="button" onclick="setRole('resto')" id="role-resto" class="py-2 rounded-full text-[11px] sm:text-xs font-extrabold bg-[#0B533E] text-white shadow-sm transition">
+                        Mitra Restoran
+                    </button>
+                    <button type="button" onclick="setRole('maggot')" id="role-maggot" class="py-2 rounded-full text-[11px] sm:text-xs font-extrabold text-gray-500 hover:text-[#111827] transition">
+                        Pengelola Maggot
+                    </button>
                 </div>
 
-                <!-- Item 2: Lunasin -->
-                <div class="gallery-item" data-category="webdev"
-                     data-title="Web App LUNASIN"
-                     data-desc="Platform web manajemen keuangan organisasi untuk mendigitalisasi pembukuan kas konvensional. Memanfaatkan framework Laravel 11 dan integrasi WhatsApp Gateway API untuk otomatisasi pengiriman struk digital secara real-time."
-                     data-problem="Mengatasi tingginya risiko human error pada pencatatan manual dan kurangnya transparansi data kas, serta merancang alur validasi bukti transfer yang cepat dan efisien bagi bendahara tanpa mengintimidasi anggota."
-                     data-process="Merancang purwarupa antarmuka modern dengan pendekatan mobile-first dan tata letak Bento Grid di Figma, kemudian mengimplementasikannya menggunakan ekosistem Laravel dan Tailwind CSS."
-                     data-solution="Menghasilkan dashboard transparansi sirkulasi dana interaktif yang dapat dipantau anggota secara terbuka, serta sistem antrean validasi satu pintu yang langsung memicu pengiriman notifikasi WhatsApp otomatis saat iuran berhasil diverifikasi.">
-                    <div class="image-placeholder gradient-2">
-                        <img src="./LUNASIN.png" alt="LUNASIN" class="gallery-img-overlay">
-                    </div>
-                    <div class="overlay">
-                        <h3>LUNASIN</h3>
-                        <p>Web App - Klik untuk Detail</p>
-                    </div>
-                </div>
+                <h2 class="text-lg sm:text-2xl font-extrabold text-[#111827]">Masuk ke Akun Mitra</h2>
+                <p id="login-sub" class="text-xs text-gray-500 mt-0.5 mb-5">Dashboard operasional & audit HPP restoran.</p>
 
-                <!-- Item 3: HI-YOU -->
-                <div class="gallery-item" data-category="webdev"
-                     data-title="HI-YOU by Hareudang Bandung"
-                     data-desc="HI-YOU (Hareudang Intelligence Sustainability Operational Value) adalah sistem intelijen operasional berbasis data yang dirancang untuk membantu bisnis kuliner mengidentifikasi, mengukur, dan mengendalikan food waste."
-                     data-problem="Makanan yang terbuang bukan sekadar masalah lingkungan, tetapi juga mengakibatkan kebocoran profit tersembunyi (profit leakage) dari bahan baku hingga sisa porsi yang tidak terjual."
-                     data-process="Mengintegrasikan pencatatan harian sisa makanan (plate & warehouse waste), sistem melakukan kalkulasi otomatis kerugian Rupiah dan emisi gas metana, lalu menganalisis tren data historis."
-                     data-solution="Menyediakan dashboard visual yang menampilkan metrik keberlanjutan, rekomendasi aksi belanja (AI Prediksi Belanja), serta fitur ekspor laporan PDF untuk audit berbasis analitik.">
-                    <div class="image-placeholder gradient-2">
-                        <img src="./logohiyou.png" alt="HI-YOU Dashboard" class="gallery-img-overlay">
+                <form onsubmit="handleLogin(event)" class="space-y-3.5 sm:space-y-4">
+                    <div>
+                        <label class="block text-[10px] sm:text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1">Email Akun</label>
+                        <input type="email" id="email-inp" value="owner@dapursunda.id" required class="w-full px-3.5 py-2.5 sm:py-3.5 rounded-xl sm:rounded-2xl border border-gray-200 bg-[#F6F8F7] focus:bg-white focus:ring-2 focus:ring-[#0B533E] outline-none text-xs sm:text-sm font-semibold text-[#111827] transition">
                     </div>
-                    <div class="overlay">
-                        <h3>HI-YOU</h3>
-                        <p>Web App - Klik untuk Detail</p>
-                    </div>
-                </div>
 
-                <!-- Item 4: Website HIMSI -->
-                <div class="gallery-item" data-category="webdev"
-                     data-title="Official Website HIMSI STMIK 'AMIKBANDUNG'"
-                     data-desc="Pengembangan website resmi HIMSI sebagai pusat informasi, arsip kegiatan, dan profil organisasi yang interaktif dan mudah diakses melalui mesin pencari."
-                     data-problem="Himpunan membutuhkan platform untuk membangun citra profesional dan menyentralisasikan pintu informasi agar mahasiswa tidak lagi bergantung pada broadcast chat semata."
-                     data-process="Menyusun arsitektur navigasi modular untuk kemudahan pembaruan konten, serta mengeksekusi antarmuka menggunakan HTML5 Semantik, Tailwind CSS, dan Vanilla JavaScript."
-                     data-solution="Menghasilkan portofolio digital permanen yang mempercepat akses informasi bagi civitas akademika sekaligus mempermudah divisi eksternal dalam pengajuan kerja sama dan sponsorship.">
-                    <div class="image-placeholder gradient-1">
-                        <img src="./himsi.png" alt="Website HIMSI Dashboard" class="gallery-img-overlay">
-                    </div>
-                    <div class="overlay">
-                        <h3>Web HIMSI</h3>
-                        <p>Company Profile - Klik untuk Detail</p>
-                    </div>
-                </div>
-
-                <!-- Item 5: Graphic Design - Hareudang Bandung -->
-                <div class="gallery-item" data-category="graphic"
-                     data-title="Visual Assets NGO Hareudang Bandung"
-                     data-desc="Manajemen dan produksi aset visual secara menyeluruh untuk NGO Hareudang Bandung, mencakup desain media sosial (Instagram Feeds & Story) hingga tata letak (layout) modul edukasi."
-                     data-problem="Organisasi non-profit membutuhkan identitas visual yang konsisten untuk mengkampanyekan isu lingkungan dan sosial, serta modul edukasi yang tidak membosankan saat dibaca masyarakat luas."
-                     data-process="Membangun sistem desain (design system) yang seragam, mengeksekusi konten kampanye harian yang engaging, dan merancang hierarki tipografi yang nyaman dibaca pada media digital maupun cetak."
-                     data-solution="Menghasilkan puluhan aset visual terstandarisasi yang sukses meningkatkan engagement kampanye digital Hareudang Bandung dan memperjelas pesan materi edukasi.">
-                    <div class="image-placeholder gradient-3">
-                        <img src="./hareudang.png" alt="Desain Grafis Hareudang" class="gallery-img-overlay">
-                    </div>
-                    <div class="overlay">
-                        <h3>NGO Hareudang</h3>
-                        <p>Graphic Design - Klik untuk Detail</p>
-                    </div>
-                </div>
-
-                <!-- Item 6: Graphic Design - HIMSI -->
-                <div class="gallery-item" data-category="graphic"
-                     data-title="Media Publikasi HIMSI STMIK 'AMIKBANDUNG'"
-                     data-desc="Pembuatan materi publikasi digital harian untuk kegiatan Himpunan Mahasiswa Sistem Informasi (HIMSI), difokuskan pada manajemen konten Instagram Feeds dan Story."
-                     data-problem="Diperlukan alur informasi visual yang cepat, rapi, dan menarik untuk mengkomunikasikan agenda himpunan, seminar, dan pengumuman akademik tanpa kehilangan identitas warna organisasi."
-                     data-process="Merancang template desain yang modular untuk pengumuman rutin, serta mengeksekusi poster digital secara cepat dan responsif untuk setiap event program kerja himpunan."
-                     data-solution="Menjaga konsistensi dan profesionalitas media sosial himpunan, yang berdampak pada kelancaran distribusi informasi dan meningkatnya antusiasme mahasiswa terhadap acara kampus.">
-                    <div class="image-placeholder gradient-4">
-                        <img src="./himsiport.png" alt="Desain Grafis HIMSI" class="gallery-img-overlay">
-                    </div>
-                    <div class="overlay">
-                        <h3>Publikasi HIMSI</h3>
-                        <p>Graphic Design - Klik untuk Detail</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Testimonials Section -->
-    <section id="testimonials" class="testimonials">
-        <div class="container">
-            <div class="section-title">
-                <h2>Feedback & Kolaborasi</h2>
-                <div class="line"></div>
-            </div>
-            <div class="testimonial-grid">
-                <div class="testimonial-card" style="border-left: 4px dashed var(--accent-color); opacity: 0.85;">
-                    <p style="font-style: normal; margin-bottom: 1rem;">"Terbuka untuk kolaborasi proyek digital baru, perancangan antarmuka aplikasi, maupun riset pengembangan web."</p>
-                    <div class="client-info">
-                        <h4>Kolaborator / Klien Berikutnya</h4>
-                        <span>Mari ciptakan solusi digital bersama</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Contact Section -->
-    <section id="contact" class="contact">
-        <div class="container">
-            <div class="contact-wrapper">
-                <div class="contact-info">
-                    <h2>Let's build something</h2>
-                    <p>Butuh partner untuk merancang UI/UX, membangun website, atau kebutuhan desain grafis? Mari diskusikan ide Anda.</p>
-                    <div class="contact-details">
-                        <div class="detail">
-                            <i class="fas fa-envelope"></i>
-                            <span>erickkatsu01@email.com</span>
-                        </div>
-                        <div class="socials">
-                            <a href="https://www.instagram.com/rikftrhman_/" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-                            <a href="https://www.linkedin.com/in/erickfaturahman/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
-                            <a href="https://www.tiktok.com/@rikculerssss" target="_blank" rel="noopener noreferrer" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+                    <div>
+                        <label class="block text-[10px] sm:text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1">Kata Sandi</label>
+                        <div class="relative">
+                            <input type="password" id="pass-inp" value="123456" required class="w-full px-3.5 py-2.5 sm:py-3.5 pr-10 rounded-xl sm:rounded-2xl border border-gray-200 bg-[#F6F8F7] focus:bg-white focus:ring-2 focus:ring-[#0B533E] outline-none text-xs sm:text-sm font-semibold text-[#111827] transition">
+                            <button type="button" onclick="togglePass()" class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-gray-400 hover:text-[#111827]">
+                                <i data-lucide="eye" class="w-4 h-4"></i>
+                            </button>
                         </div>
                     </div>
-                </div>
-                <!-- Action Endpoint Formspree Aktif -->
-                <form class="contact-form" action="https://formspree.io/f/mwlkaooz" method="POST">
-                    <div class="input-group">
-                        <input type="text" name="name" required>
-                        <label>Nama</label>
+
+                    <div class="flex items-center justify-between text-[11px] sm:text-xs pt-0.5">
+                        <label class="flex items-center gap-2 text-gray-500 font-medium cursor-pointer">
+                            <input type="checkbox" checked class="rounded text-[#0B533E] focus:ring-[#0B533E]"> Ingat perangkat
+                        </label>
+                        <span class="text-[#0B533E] font-bold">Akun Demo Siap</span>
                     </div>
-                    <div class="input-group">
-                        <input type="email" name="email" required>
-                        <label>Email</label>
-                    </div>
-                    <div class="input-group select-group">
-                        <select name="project_type" required>
-                            <option value="" disabled selected hidden>Pilih Jenis Kolaborasi</option>
-                            <option value="UI/UX Design">UI/UX Design</option>
-                            <option value="Web Development">Web Development</option>
-                            <option value="Graphic Design">Graphic Design</option>
-                        </select>
-                        <i class="fas fa-chevron-down select-icon"></i>
-                    </div>
-                    <div class="input-group">
-                        <textarea name="message" required></textarea>
-                        <label>Pesan</label>
-                    </div>
-                    <button type="submit" class="btn-primary">Kirim Pesan</button>
+
+                    <button type="submit" id="btn-login" class="w-full bg-[#111827] hover:bg-black text-white font-bold py-3 sm:py-4 rounded-full shadow-md transition flex items-center justify-center gap-2 text-xs sm:text-sm mt-2">
+                        <span>Masuk Sebagai Mitra Resto</span>
+                      
+                    </button>
                 </form>
-            </div>
-        </div>
-    </section>
 
-    <!-- Project Modal -->
-    <div id="project-modal" class="modal">
-        <div class="modal-content">
-            <span class="close-modal">&times;</span>
-            <div id="modal-img-placeholder" class="modal-hero"></div>
-            <h2 id="modal-title">Judul Project</h2>
-            <p class="modal-tags" id="modal-category">Kategori</p>
-            <div class="modal-body">
-                <h3>About Project</h3>
-                <p id="modal-desc">Deskripsi project...</p>
-                
-                <h3>Challenge</h3>
-                <p id="modal-problem">Masalah yang dihadapi...</p>
-                
-                <h3>Process & Solution</h3>
-                <p id="modal-process">Proses pengerjaan...</p>
-                <p id="modal-solution">Solusi yang diberikan...</p>
+                <p class="text-center text-[11px] sm:text-xs text-gray-500 mt-5 sm:mt-7">
+                    Belum terdaftar di ekosistem NOMO?
+                    <a href="register.html" class="font-extrabold text-[#0B533E] hover:underline">Daftar Mitra Baru</a>
+                </p>
             </div>
         </div>
+
     </div>
 
-    <footer>
-        <p>&copy; 2026 Erick Faturahman. Designed & Built by Me.</p>
-    </footer>
+    <script src="nomo-app.js"></script>
+    <script>
+        document.getElementById('splash-logo').innerHTML = getNomoLogoSVG('light');
+        document.getElementById('login-logo').innerHTML = getNomoLogoSVG('light');
+        lucide.createIcons();
 
-    <script src="script.js"></script>
+        let splashDismissed = false;
+        function dismissSplash() {
+            if (splashDismissed) return;
+            splashDismissed = true;
+
+            const splash = document.getElementById('intro-splash');
+            const card = document.getElementById('login-card');
+
+            splash.classList.add('opacity-0', 'scale-105', 'pointer-events-none');
+            card.classList.remove('opacity-0', 'translate-y-4', 'scale-[0.98]');
+            card.classList.add('opacity-100', 'translate-y-0', 'scale-100');
+
+            setTimeout(() => {
+                splash.style.display = 'none';
+            }, 520);
+        }
+
+        // Otomatis masuk ke menu login setelah animasi selesai
+        setTimeout(dismissSplash, 1850);
+
+        let activeRole = 'resto';
+
+        function setRole(role) {
+            activeRole = role;
+            const btnResto = document.getElementById('role-resto');
+            const btnMaggot = document.getElementById('role-maggot');
+            const emailInp = document.getElementById('email-inp');
+            const submitBtn = document.getElementById('btn-login');
+
+            if (role === 'resto') {
+                btnResto.className = 'py-2 rounded-full text-[11px] sm:text-xs font-extrabold bg-[#0B533E] text-white shadow-sm transition';
+                btnMaggot.className = 'py-2 rounded-full text-[11px] sm:text-xs font-extrabold text-gray-500 hover:text-[#111827] transition';
+                document.getElementById('hero-title').textContent = 'Kendalikan Sisa Dapur & Selamatkan Profit Resto.';
+                document.getElementById('hero-desc').textContent = 'Catat sisa makanan dalam hitungan detik, pantau kebocoran HPP secara real-time, dan salurkan limbah organik ke mitra maggot BSF terdekat.';
+                document.getElementById('login-sub').textContent = 'Dashboard operasional & audit HPP restoran.';
+                emailInp.value = 'owner@dapursunda.id';
+                submitBtn.innerHTML = '<span>Masuk Sebagai Mitra Resto</span><i data-lucide="arrow-right" class="w-4 h-4"></i>';
+            } else {
+                btnMaggot.className = 'py-2 rounded-full text-[11px] sm:text-xs font-extrabold bg-[#0B533E] text-white shadow-sm transition';
+                btnResto.className = 'py-2 rounded-full text-[11px] sm:text-xs font-extrabold text-gray-500 hover:text-[#111827] transition';
+                document.getElementById('hero-title').textContent = 'Pasokan Pakan Organik Terpilah Tanpa Putus.';
+                document.getElementById('hero-desc').textContent = 'Terima permintaan jemput limbah dapur restoran sekitar, atur armada penjemputan, dan pantau hasil panen Maggot BSF & Kasgot.';
+                document.getElementById('login-sub').textContent = 'Portal logistik pakan & biokonversi Maggot BSF.';
+                emailInp.value = 'mitra@maggotbinong.id';
+                submitBtn.innerHTML = '<span>Masuk Sebagai Pengelola Maggot</span></i>';
+            }
+            lucide.createIcons();
+        }
+
+        function togglePass() {
+            const inp = document.getElementById('pass-inp');
+            inp.type = inp.type === 'password' ? 'text' : 'password';
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            window.location.href = activeRole === 'maggot' ? 'maggot-dashboard.html' : 'dashboard.html';
+        }
+    </script>
 </body>
 </html>

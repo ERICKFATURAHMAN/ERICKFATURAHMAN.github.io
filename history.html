@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analitik & Laporan — NOMO (No More Waste)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+
+        @media print {
+            @page {
+                size: A4 portrait;
+                margin: 12mm;
+            }
+            body {
+                background: #ffffff !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            #app-shell, .no-print {
+                display: none !important;
+            }
+            #print-preview-overlay {
+                position: static !important;
+                inset: auto !important;
+                background: #ffffff !important;
+                padding: 0 !important;
+                display: block !important;
+            }
+            #corporate-paper {
+                box-shadow: none !important;
+                border: none !important;
+                border-radius: 0 !important;
+                max-width: 100% !important;
+                width: 100% !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+        }
+    </style>
+</head>
+<body class="bg-[#F6F8F7] text-[#111827] pb-20 lg:pb-10 overflow-x-hidden">
+
+    <!-- ========================================================= -->
+    <!-- TAMPILAN APLIKASI UTAMA                                   -->
+    <!-- ========================================================= -->
+    <div id="app-shell" class="flex flex-col lg:flex-row min-h-screen">
+        <!-- Sidebar & Mobile Header Mount -->
+        <div id="nomo-sidebar-mount"></div>
+
+        <!-- Main Content -->
+        <main class="flex-1 min-w-0 w-full max-w-6xl mx-auto px-3.5 sm:px-8 py-4 sm:py-6 space-y-4 sm:space-y-6">
+
+            <!-- Top Header -->
+            <header class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div>
+                    <p class="text-xs font-semibold text-gray-500">Audit Keuangan & Lingkungan</p>
+                    <h1 class="text-base sm:text-2xl font-extrabold text-[#111827] tracking-tight">Analitik & Riwayat Limbah</h1>
+                </div>
+                <button onclick="openCorporatePrint()" class="w-full sm:w-auto bg-[#0B533E] hover:bg-[#083F2F] text-white font-bold px-5 py-3 rounded-full text-xs transition flex items-center justify-center gap-1.5 shrink-0">
+                    <i data-lucide="printer" class="w-4 h-4 shrink-0"></i>
+                    <span>Cetak Laporan</span>
+                </button>
+            </header>
+
+            <!-- TOP CATEGORIES BREAKDOWN -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6">
+                
+                <!-- Kiri (5 Kolom): Ringkasan Total & Proporsi (Tanpa Nested Box) -->
+                <div class="lg:col-span-5 bg-white rounded-2xl border border-gray-200/80 p-5 sm:p-6 flex flex-col justify-between">
+                    <div>
+                        <span class="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Total Kebocoran Modal Terdeteksi</span>
+                        <p class="text-2xl sm:text-3xl font-black text-[#111827] mt-1">Rp <span id="stat-total-leak">0</span></p>
+                        <p class="text-xs font-bold text-[#0B533E] mt-1.5 flex items-center gap-1">
+                            <i data-lucide="trending-down" class="w-3.5 h-3.5 shrink-0"></i> Dari total <span id="stat-total-kg">0 Kg</span> sisa makanan
+                        </p>
+                    </div>
+
+                    <div class="grid grid-cols-2 divide-x divide-gray-100 mt-5 pt-4 border-t border-gray-100">
+                        <div class="pr-4">
+                            <span class="text-[10px] font-bold text-gray-400 uppercase block">Sisa Dapur</span>
+                            <span id="stat-pre-kg" class="text-base sm:text-lg font-black text-[#111827] mt-0.5 block">0 Kg</span>
+                        </div>
+                        <div class="pl-4">
+                            <span class="text-[10px] font-bold text-[#0B533E] uppercase block">Sisa Piring</span>
+                            <span id="stat-post-kg" class="text-base sm:text-lg font-black text-[#0B533E] mt-0.5 block">0 Kg</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Kanan (7 Kolom): Peringkat Kategori -->
+                <div class="lg:col-span-7 bg-white rounded-2xl border border-gray-200/80 p-5 sm:p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-xs sm:text-sm font-extrabold text-[#111827]">Peringkat Penyumbang Limbah</h3>
+                        <span class="text-[11px] font-bold text-gray-400">Tertinggi</span>
+                    </div>
+                    <div id="top-categories-list" class="space-y-3.5"></div>
+                </div>
+
+            </div>
+
+            <!-- TRANSACTION-STYLE WASTE LOGS -->
+            <div class="bg-white rounded-2xl border border-gray-200/80 p-5 sm:p-6">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 pb-3.5 border-b border-gray-100">
+                    <div>
+                        <h3 class="text-sm sm:text-base font-extrabold text-[#111827]">Log Pencatatan Harian</h3>
+                        <p class="text-xs text-gray-500">Filter berdasarkan sumber limbah dapur atau sisa piring tamu</p>
+                    </div>
+
+                    <!-- Filter Tabs -->
+                    <div class="grid grid-cols-3 sm:flex items-center gap-1 bg-[#F6F8F7] p-1 rounded-xl w-full sm:w-fit">
+                        <button onclick="setFilter('all')" id="flt-all" class="flt-btn px-3 sm:px-4 py-1.5 rounded-lg text-xs font-bold bg-[#0B533E] text-white transition text-center">Semua</button>
+                        <button onclick="setFilter('pre')" id="flt-pre" class="flt-btn px-3 sm:px-4 py-1.5 rounded-lg text-xs font-bold text-gray-500 hover:text-[#111827] transition text-center">Sisa Dapur</button>
+                        <button onclick="setFilter('post')" id="flt-post" class="flt-btn px-3 sm:px-4 py-1.5 rounded-lg text-xs font-bold text-gray-500 hover:text-[#111827] transition text-center">Sisa Piring</button>
+                    </div>
+                </div>
+
+                <div id="waste-logs-container" class="divide-y divide-gray-100"></div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- ========================================================= -->
+    <!-- CORPORATE A4 REPORT PREVIEW & PDF DOWNLOAD                -->
+    <!-- ========================================================= -->
+    <div id="print-preview-overlay" class="hidden fixed inset-0 z-50 bg-black/70 backdrop-blur-sm overflow-y-auto p-3 sm:p-6">
+        
+        <!-- Toolbar Aksi -->
+        <div class="no-print max-w-4xl mx-auto mb-3 sm:mb-4 bg-[#111827] text-white px-4 sm:px-6 py-3 rounded-2xl flex flex-wrap items-center justify-between gap-2.5">
+            <span class="text-xs font-bold">Pratinjau Dokumen Laporan (Format A4)</span>
+            <div class="flex items-center gap-2 w-full sm:w-auto">
+                <button type="button" id="btn-download-pdf" onclick="downloadCorporatePDF()" class="flex-1 sm:flex-initial bg-[#0B533E] hover:bg-[#083F2F] disabled:opacity-60 text-white font-extrabold px-5 py-2 rounded-full text-xs transition flex items-center justify-center gap-1.5">
+                    <i data-lucide="download" class="w-3.5 h-3.5"></i>
+                    <span id="btn-download-text">Download PDF</span>
+                </button>
+                <button type="button" onclick="closeCorporatePrint()" class="px-4 py-2 rounded-full bg-white/10 hover:bg-white/20 text-white font-bold text-xs transition">
+                    Tutup
+                </button>
+            </div>
+        </div>
+
+        <!-- Kertas Dokumen Korporat A4 -->
+        <div id="corporate-paper" class="max-w-4xl mx-auto bg-white rounded-2xl border border-gray-200 p-5 sm:p-12 text-[#111827]">
+            
+            <!-- 1. KOP SURAT -->
+            <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-4 pb-5 sm:pb-6 border-b-2 border-[#111827]">
+                <div class="space-y-1.5">
+                    <div id="corp-logo"></div>
+                    <p class="text-[11px] text-gray-500 font-medium pt-1">
+                        Platform Manajemen Limbah Pangan & Audit Efisiensi HPP B2B
+                    </p>
+                </div>
+                <div class="sm:text-right space-y-1">
+                    <span class="inline-block px-3 py-1 bg-[#111827] text-white text-[10px] font-extrabold uppercase tracking-widest rounded">
+                        Laporan Audit & ESG
+                    </span>
+                    <p class="text-xs font-extrabold text-[#111827] pt-1" id="corp-doc-no">NO. DOK: NOMO/AUD/2026/11-014</p>
+                    <p class="text-[11px] text-gray-500" id="corp-doc-date">Tanggal Terbit: 14 November 2026</p>
+                </div>
+            </div>
+
+            <!-- 2. INFORMASI ENTITAS MITRA -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 py-4 sm:py-5 border-b border-gray-200 text-xs">
+                <div class="space-y-1">
+                    <span class="text-[10px] font-extrabold uppercase tracking-wider text-gray-400 block">Entitas Mitra Restoran</span>
+                    <p class="text-sm font-extrabold text-[#111827]" id="corp-resto-name">Dapur Sunda Lembang</p>
+                    <p class="text-gray-600" id="corp-resto-loc">Jl. Setiabudi No. 142, Bandung</p>
+                    <p class="text-gray-500" id="corp-resto-pic">Penanggung Jawab: Erick Faturahman</p>
+                </div>
+                <div class="sm:text-right space-y-1">
+                    <span class="text-[10px] font-extrabold uppercase tracking-wider text-gray-400 block">Parameter Laporan</span>
+                    <p class="font-bold text-[#111827]">Periode Audit: 08 Nov – 14 Nov 2026</p>
+                    <p class="text-gray-600">Penyaluran Sirkular: <span class="font-extrabold text-[#0B533E]">Mitra Maggot BSF & Kompos</span></p>
+                    <p class="text-gray-500">Standar Emisi: Faktor Konversi 1,5 kg CO₂e/kg</p>
+                </div>
+            </div>
+
+            <!-- 3. RINGKASAN EKSEKUTIF -->
+            <div class="py-5 sm:py-6">
+                <h2 class="text-xs font-extrabold uppercase tracking-widest text-[#0B533E] mb-3">I. Ringkasan Eksekutif Kinerja Operasional</h2>
+                <div class="grid grid-cols-2 sm:grid-cols-4 border border-gray-300 rounded-xl overflow-hidden divide-y sm:divide-y-0 sm:divide-x divide-gray-300">
+                    <div class="p-3.5 sm:p-4 bg-[#F6F8F7]">
+                        <span class="text-[10px] font-bold uppercase text-gray-500 block">Total Timbulan Limbah</span>
+                        <span class="text-base sm:text-lg font-black text-[#111827] mt-1 block" id="corp-kpi-waste">0.0 Kg</span>
+                        <span class="text-[10px] text-gray-500" id="corp-kpi-split">Dapur 0 Kg | Piring 0 Kg</span>
+                    </div>
+                    <div class="p-3.5 sm:p-4 bg-white">
+                        <span class="text-[10px] font-bold uppercase text-gray-500 block">Kebocoran Profit (HPP)</span>
+                        <span class="text-base sm:text-lg font-black text-[#111827] mt-1 block" id="corp-kpi-leak">Rp 0</span>
+                        <span class="text-[10px] text-gray-500">Khusus sisa produksi dapur</span>
+                    </div>
+                    <div class="p-3.5 sm:p-4 bg-[#F6F8F7]">
+                        <span class="text-[10px] font-bold uppercase text-gray-500 block">Tersalur ke Maggot/Kompos</span>
+                        <span class="text-base sm:text-lg font-black text-[#0B533E] mt-1 block" id="corp-kpi-diverted">0.0 Kg</span>
+                        <span class="text-[10px] text-gray-500" id="corp-kpi-co2">0.0 Kg CO₂e dicegah</span>
+                    </div>
+                    <div class="p-3.5 sm:p-4 bg-white">
+                        <span class="text-[10px] font-bold uppercase text-gray-500 block">Rasio Sisa Piring Tamu</span>
+                        <span class="text-base sm:text-lg font-black text-[#111827] mt-1 block" id="corp-kpi-plate">0 g / Tamu</span>
+                        <span class="text-[10px] text-gray-500" id="corp-kpi-cust">Total 0 pengunjung</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. TABEL REKAPITULASI PER KATEGORI -->
+            <div class="pb-5 sm:pb-6">
+                <h2 class="text-xs font-extrabold uppercase tracking-widest text-[#0B533E] mb-3">II. Rekapitulasi Dampak Finansial & Lingkungan per Kategori</h2>
+                <div class="overflow-x-auto border border-gray-300 rounded-xl">
+                    <table class="w-full text-left border-collapse text-xs">
+                        <thead>
+                            <tr class="bg-[#111827] text-white text-[10px] uppercase tracking-wider">
+                                <th class="py-2.5 sm:py-3 px-3 sm:px-3.5 font-bold w-10">No</th>
+                                <th class="py-2.5 sm:py-3 px-3 sm:px-3.5 font-bold">Kategori Bahan Baku</th>
+                                <th class="py-2.5 sm:py-3 px-3 sm:px-3.5 font-bold text-right">Volume (Kg)</th>
+                                <th class="py-2.5 sm:py-3 px-3 sm:px-3.5 font-bold text-right">Porsi (%)</th>
+                                <th class="py-2.5 sm:py-3 px-3 sm:px-3.5 font-bold text-right">Emisi (CO₂e)</th>
+                                <th class="py-2.5 sm:py-3 px-3 sm:px-3.5 font-bold text-right">Kerugian HPP (Rp)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="corp-cat-tbody" class="divide-y divide-gray-200"></tbody>
+                        <tfoot id="corp-cat-tfoot" class="bg-[#F6F8F7] border-t-2 border-[#111827] font-extrabold"></tfoot>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 5. TABEL RINCIAN LOG HARIAN -->
+            <div class="pb-6 sm:pb-8">
+                <h2 class="text-xs font-extrabold uppercase tracking-widest text-[#0B533E] mb-3">III. Rincian Log Pencatatan Harian</h2>
+                <div class="overflow-x-auto border border-gray-300 rounded-xl">
+                    <table class="w-full text-left border-collapse text-[11px]">
+                        <thead>
+                            <tr class="bg-gray-100 text-[#111827] border-b border-gray-300 text-[10px] uppercase tracking-wider">
+                                <th class="py-2 px-3 font-extrabold">Tanggal</th>
+                                <th class="py-2 px-3 font-extrabold">Kategori Bahan</th>
+                                <th class="py-2 px-3 font-extrabold">Klasifikasi</th>
+                                <th class="py-2 px-3 font-extrabold">Catatan Operasional</th>
+                                <th class="py-2 px-3 font-extrabold text-right">Berat</th>
+                                <th class="py-2 px-3 font-extrabold text-right">Rugi HPP</th>
+                            </tr>
+                        </thead>
+                        <tbody id="corp-log-tbody" class="divide-y divide-gray-200"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 6. CATATAN METODOLOGI & BLOK TANDA TANGAN KORPORAT -->
+            <div class="pt-5 sm:pt-6 border-t border-gray-300 grid grid-cols-1 sm:grid-cols-12 gap-6 items-end text-[11px]">
+                <div class="sm:col-span-7 space-y-1.5 text-gray-500">
+                    <p class="font-extrabold text-[#111827] uppercase text-[10px] tracking-wider">Catatan Metodologi Audit:</p>
+                    <p>1. Kerugian HPP (Profit Leakage) dihitung khusus pada limbah persiapan dapur (<em>pre-consumer</em>) berdasarkan master harga pokok bahan baku per kilogram.</p>
+                    <p>2. Limbah sisa piring tamu (<em>post-consumer</em>) dicatat untuk rasio efisiensi porsi tanpa membebani kerugian modal.</p>
+                </div>
+
+                <div class="sm:col-span-5 sm:text-right space-y-1">
+                    <p class="text-[11px] font-semibold text-gray-600">Bandung, 14 November 2026</p>
+                    <p class="text-[10px] text-gray-400 uppercase tracking-wider">Mengetahui,</p>
+                    <div class="h-12"></div>
+                    <p class="text-xs font-extrabold text-[#111827] underline underline-offset-4" id="corp-sign-owner">Erick Faturahman</p>
+                    <p class="text-[10px] text-gray-600 font-medium" id="corp-sign-resto">Manajemen Dapur Sunda Lembang</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- MODAL ZOOM FOTO -->
+    <div id="modal-foto" class="no-print fixed inset-0 z-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity p-4">
+        <div class="absolute inset-0 bg-black/75 backdrop-blur-sm" onclick="closeFotoModal()"></div>
+        <div class="bg-white p-2.5 rounded-2xl max-w-md w-full relative z-10">
+            <img id="modal-foto-img" src="" alt="Bukti" class="w-full rounded-xl max-h-[70vh] object-contain">
+            <button onclick="closeFotoModal()" class="mt-2.5 w-full bg-gray-100 hover:bg-gray-200 text-[#111827] font-bold py-2.5 rounded-full text-xs">Tutup Foto</button>
+        </div>
+    </div>
+
+    <script src="nomo-app.js"></script>
+    <script>
+        renderNomoShell('history');
+        document.getElementById('corp-logo').innerHTML = getNomoLogoSVG('dark', false);
+        let currentFilter = 'all';
+
+        function setFilter(flt) {
+            currentFilter = flt;
+            document.querySelectorAll('.flt-btn').forEach(b => {
+                b.classList.remove('bg-[#0B533E]', 'text-white');
+                b.classList.add('text-gray-500');
+            });
+            const active = document.getElementById('flt-' + flt);
+            active.classList.remove('text-gray-500');
+            active.classList.add('bg-[#0B533E]', 'text-white');
+            renderAnalyticsPage();
+        }
+
+        function renderAnalyticsPage() {
+            const m = getDashboardMetrics();
+            const state = m.data;
+
+            document.getElementById('stat-total-leak').textContent = formatRupiah(m.totalLeakage);
+            document.getElementById('stat-total-kg').textContent = `${m.totalWaste.toFixed(1)} Kg`;
+            document.getElementById('stat-pre-kg').textContent = `${m.preConsumerWaste.toFixed(1)} Kg`;
+            document.getElementById('stat-post-kg').textContent = `${m.postConsumerWaste.toFixed(1)} Kg`;
+
+            const catSummary = {};
+            state.wastes.forEach(w => {
+                if (!catSummary[w.category]) catSummary[w.category] = { weight: 0, leak: 0 };
+                catSummary[w.category].weight += Number(w.weight);
+                catSummary[w.category].leak += Number(w.profit_leakage);
+            });
+
+            const sortedCats = Object.entries(catSummary).sort((a, b) => b[1].weight - a[1].weight);
+            document.getElementById('top-categories-list').innerHTML = sortedCats.map(([cat, val]) => {
+                const vis = getCategoryVisual(cat);
+                const pct = m.totalWaste > 0 ? Math.round((val.weight / m.totalWaste) * 100) : 0;
+                return `
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-xl ${vis.badge} flex items-center justify-center shrink-0">
+                        <i data-lucide="${vis.icon}" class="w-4 h-4"></i>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center justify-between gap-2 text-xs font-extrabold text-[#111827] mb-1">
+                            <span class="truncate">${cat}</span>
+                            <span class="text-rose-600 shrink-0">Rp ${formatRupiah(val.leak)}</span>
+                        </div>
+                        <div class="w-full bg-gray-100 h-1.5 rounded-full overflow-hidden mb-1">
+                            <div class="bg-[#0B533E] h-1.5 rounded-full" style="width:${pct}%"></div>
+                        </div>
+                        <span class="text-[10px] font-bold text-gray-400 block">${val.weight.toFixed(1)} Kg (${pct}% dari total)</span>
+                    </div>
+                </div>`;
+            }).join('');
+
+            const filtered = state.wastes.filter(w => {
+                if (currentFilter === 'pre') return w.cause.includes('Pre-consumer');
+                if (currentFilter === 'post') return w.cause === 'Sisa Pelanggan';
+                return true;
+            });
+
+            document.getElementById('waste-logs-container').innerHTML = filtered.map(w => {
+                const vis = getCategoryVisual(w.category);
+                const isPre = w.cause.includes('Pre-consumer');
+                return `
+                <div class="py-3.5 flex items-center justify-between gap-3 sm:gap-4">
+                    <div class="flex items-center gap-3 min-w-0 flex-1">
+                        <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl ${vis.badge} flex items-center justify-center shrink-0">
+                            <i data-lucide="${vis.icon}" class="w-4 h-4"></i>
+                        </div>
+                        <div class="min-w-0 flex-1">
+                            <div class="flex flex-wrap items-center gap-1.5">
+                                <p class="text-xs sm:text-sm font-extrabold text-[#111827] truncate">${w.category}</p>
+                                <span class="px-2 py-0.5 rounded-md text-[9px] font-bold shrink-0 ${isPre ? 'bg-[#111827] text-white' : 'bg-[#ECFDF5] text-[#0B533E]'}">
+                                    ${isPre ? 'Dapur' : 'Piring'}
+                                </span>
+                            </div>
+                            <p class="text-[11px] text-gray-500 truncate mt-0.5">${w.date} | ${w.notes || 'Tercatat'}</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-2.5 sm:gap-3 shrink-0">
+                        ${w.photo ? `<button onclick="openFotoModal('${w.photo}')" class="w-8 h-8 rounded-lg overflow-hidden shrink-0"><img src="${w.photo}" class="w-full h-full object-cover"></button>` : ''}
+                        <div class="text-right">
+                            <p class="text-xs sm:text-sm font-extrabold ${w.profit_leakage > 0 ? 'text-rose-600' : 'text-[#111827]'}">
+                                ${w.profit_leakage > 0 ? '-Rp ' + formatRupiah(w.profit_leakage) : 'Rp 0'}
+                            </p>
+                            <p class="text-[10px] font-bold text-gray-400">${Number(w.weight).toFixed(1)} Kg</p>
+                        </div>
+                        <button onclick="deleteWaste(${w.id})" class="text-gray-300 hover:text-rose-600 p-1 rounded-lg transition" title="Hapus">
+                            <i data-lucide="trash-2" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                </div>`;
+            }).join('');
+
+            lucide.createIcons();
+        }
+
+        function openCorporatePrint() {
+            const m = getDashboardMetrics();
+            const state = m.data;
+
+            document.getElementById('corp-resto-name').textContent = state.resto.name;
+            document.getElementById('corp-resto-loc').textContent = state.resto.location;
+            document.getElementById('corp-resto-pic').textContent = `Penanggung Jawab: ${state.resto.owner}`;
+            document.getElementById('corp-sign-owner').textContent = state.resto.owner;
+            document.getElementById('corp-sign-resto').textContent = `Manajemen ${state.resto.name}`;
+
+            document.getElementById('corp-kpi-waste').textContent = `${m.totalWaste.toFixed(1)} Kg`;
+            document.getElementById('corp-kpi-split').textContent = `Dapur ${m.preConsumerWaste.toFixed(1)} Kg | Piring ${m.postConsumerWaste.toFixed(1)} Kg`;
+            document.getElementById('corp-kpi-leak').textContent = `Rp ${formatRupiah(m.totalLeakage)}`;
+            document.getElementById('corp-kpi-diverted').textContent = `${m.totalDiverted.toFixed(1)} Kg`;
+            document.getElementById('corp-kpi-co2').textContent = `${m.savedEmission} Kg CO₂e dicegah`;
+            document.getElementById('corp-kpi-plate').textContent = `${m.allTimeWastePerCustomer} g / Tamu`;
+            document.getElementById('corp-kpi-cust').textContent = `Total ${formatRupiah(m.allTimeCustomers)} pengunjung`;
+
+            const catSummary = {};
+            state.wastes.forEach(w => {
+                if (!catSummary[w.category]) catSummary[w.category] = { weight: 0, leak: 0 };
+                catSummary[w.category].weight += Number(w.weight);
+                catSummary[w.category].leak += Number(w.profit_leakage);
+            });
+
+            const sortedCats = Object.entries(catSummary).sort((a, b) => b[1].weight - a[1].weight);
+            document.getElementById('corp-cat-tbody').innerHTML = sortedCats.map(([cat, val], i) => {
+                const pct = m.totalWaste > 0 ? ((val.weight / m.totalWaste) * 100).toFixed(1) : '0.0';
+                const em = (val.weight * 1.5).toFixed(1);
+                return `
+                <tr class="${i % 2 === 1 ? 'bg-[#F6F8F7]/60' : 'bg-white'}">
+                    <td class="py-2.5 px-3.5 font-bold text-gray-500">${i + 1}</td>
+                    <td class="py-2.5 px-3.5 font-extrabold text-[#111827]">${cat}</td>
+                    <td class="py-2.5 px-3.5 text-right font-bold">${val.weight.toFixed(1)} Kg</td>
+                    <td class="py-2.5 px-3.5 text-right text-gray-600">${pct}%</td>
+                    <td class="py-2.5 px-3.5 text-right text-gray-600">${em} Kg</td>
+                    <td class="py-2.5 px-3.5 text-right font-extrabold text-[#111827]">Rp ${formatRupiah(val.leak)}</td>
+                </tr>`;
+            }).join('');
+
+            document.getElementById('corp-cat-tfoot').innerHTML = `
+                <tr>
+                    <td colspan="2" class="py-3 px-3.5 uppercase text-[10px] tracking-wider">Total Akumulasi Audit</td>
+                    <td class="py-3 px-3.5 text-right">${m.totalWaste.toFixed(1)} Kg</td>
+                    <td class="py-3 px-3.5 text-right">100%</td>
+                    <td class="py-3 px-3.5 text-right">${m.totalEmission} Kg</td>
+                    <td class="py-3 px-3.5 text-right text-[#0B533E]">Rp ${formatRupiah(m.totalLeakage)}</td>
+                </tr>
+            `;
+
+            document.getElementById('corp-log-tbody').innerHTML = state.wastes.map((w, i) => {
+                const isPre = w.cause.includes('Pre-consumer');
+                return `
+                <tr class="${i % 2 === 1 ? 'bg-[#F6F8F7]/60' : 'bg-white'}">
+                    <td class="py-2 px-3 whitespace-nowrap text-gray-600">${w.date} (${w.time})</td>
+                    <td class="py-2 px-3 font-bold text-[#111827]">${w.category}</td>
+                    <td class="py-2 px-3">
+                        <span class="px-2 py-0.5 rounded text-[9px] font-extrabold ${isPre ? 'bg-[#111827] text-white' : 'bg-[#ECFDF5] text-[#0B533E] border border-emerald-200'}">
+                            ${isPre ? 'Pre-consumer' : 'Post-consumer'}
+                        </span>
+                    </td>
+                    <td class="py-2 px-3 text-gray-600">${w.notes || '-'}</td>
+                    <td class="py-2 px-3 text-right font-bold">${Number(w.weight).toFixed(1)} Kg</td>
+                    <td class="py-2 px-3 text-right font-bold">Rp ${formatRupiah(w.profit_leakage)}</td>
+                </tr>`;
+            }).join('');
+
+            document.getElementById('print-preview-overlay').classList.remove('hidden');
+            lucide.createIcons();
+        }
+
+        function downloadCorporatePDF() {
+            const paper = document.getElementById('corporate-paper');
+            const btn = document.getElementById('btn-download-pdf');
+            const btnText = document.getElementById('btn-download-text');
+            const state = getNomoData();
+            const safeRestoName = state.resto.name.replace(/[^a-zA-Z0-9]/g, '_');
+
+            if (typeof html2pdf === 'undefined') {
+                window.print();
+                return;
+            }
+
+            btn.disabled = true;
+            btnText.textContent = 'Mengunduh PDF...';
+
+            paper.classList.remove('rounded-2xl', 'border', 'border-gray-200');
+
+            const opt = {
+                margin: [10, 10, 10, 10],
+                filename: `Laporan_Audit_NOMO_${safeRestoName}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true, logging: false },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            html2pdf().set(opt).from(paper).save().then(() => {
+                paper.classList.add('rounded-2xl', 'border', 'border-gray-200');
+                btn.disabled = false;
+                btnText.textContent = 'Download PDF';
+            }).catch(() => {
+                paper.classList.add('rounded-2xl', 'border', 'border-gray-200');
+                btn.disabled = false;
+                btnText.textContent = 'Download PDF';
+                window.print();
+            });
+        }
+
+        function closeCorporatePrint() {
+            document.getElementById('print-preview-overlay').classList.add('hidden');
+        }
+
+        function deleteWaste(id) {
+            const state = getNomoData();
+            state.wastes = state.wastes.filter(w => w.id !== id);
+            saveNomoData(state);
+            renderAnalyticsPage();
+        }
+
+        function openFotoModal(src) {
+            document.getElementById('modal-foto-img').src = src;
+            document.getElementById('modal-foto').classList.remove('opacity-0', 'pointer-events-none');
+        }
+        function closeFotoModal() {
+            document.getElementById('modal-foto').classList.add('opacity-0', 'pointer-events-none');
+        }
+
+        renderAnalyticsPage();
+    </script>
+</body>
+</html>

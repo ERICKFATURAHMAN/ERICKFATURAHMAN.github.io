@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catat Sisa Makanan — NOMO (No More Waste)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    </style>
+</head>
+<body class="bg-[#F6F8F7] text-[#111827] pb-20 lg:pb-10 overflow-x-hidden">
+
+    <div class="flex flex-col lg:flex-row min-h-screen">
+        <!-- Sidebar & Mobile Header Mount -->
+        <div id="nomo-sidebar-mount"></div>
+
+        <!-- Main Content -->
+        <main class="flex-1 min-w-0 w-full max-w-6xl mx-auto px-3.5 sm:px-8 py-4 sm:py-6 space-y-4 sm:space-y-6">
+
+            <!-- Header -->
+            <header class="flex flex-wrap items-center justify-between gap-3">
+                <div>
+                    <p class="text-xs font-semibold text-gray-500">Operasional Harian Dapur</p>
+                    <h1 class="text-base sm:text-2xl font-extrabold text-[#111827] tracking-tight">Catat Sisa & Closing Tamu</h1>
+                </div>
+                <a href="dashboard.html" class="hidden sm:inline-flex px-4 py-2 rounded-full bg-white border border-gray-200/80 text-xs font-bold text-[#111827] hover:bg-gray-50 transition">
+                    ← Kembali ke Beranda
+                </a>
+            </header>
+
+            <!-- Toast Alert -->
+            <div id="toast-alert" class="hidden bg-[#0B533E] text-white p-3.5 sm:px-5 sm:py-4 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5">
+                <div class="flex items-center gap-2.5">
+                    <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-300 shrink-0"></i>
+                    <p id="toast-message" class="text-xs sm:text-sm font-bold leading-snug"></p>
+                </div>
+                <a href="dashboard.html" class="text-xs font-extrabold underline text-emerald-200 shrink-0 pl-6 sm:pl-0">Cek Beranda →</a>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6">
+
+                <!-- KIRI (8 Kolom): FORM PENCATATAN LIMBAH -->
+                <div class="lg:col-span-8 bg-white rounded-2xl border border-gray-200/80 p-5 sm:p-7">
+                    <div class="mb-5">
+                        <span class="text-[10px] font-extrabold uppercase tracking-wider text-[#0B533E] block">Step 1 | Audit Limbah</span>
+                        <h2 class="text-sm sm:text-lg font-extrabold text-[#111827] mt-1">Input Timbangan Sisa Makanan</h2>
+                        <p class="text-xs text-gray-500 mt-0.5">Pilih kategori bahan, sumber limbah, dan berat timbangan untuk menghitung dampak finansial & emisi.</p>
+                    </div>
+
+                    <form onsubmit="handleSaveWaste(event)" class="space-y-4 sm:space-y-5">
+                        
+                        <!-- Visual Quick Category Pills (Tanpa Border Kaku) -->
+                        <div>
+                            <label class="block text-[10px] sm:text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-2">Pilih Kategori Bahan <span class="text-rose-500">*</span></label>
+                            <div id="category-pills-grid" class="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-2.5"></div>
+                            <input type="hidden" id="selected_cat_id" required>
+                        </div>
+
+                        <!-- Form Tambahan Jika Pilih Bahan Baru / Lainnya -->
+                        <div id="input_lainnya" class="hidden bg-[#F6F8F7] p-4 rounded-xl space-y-3">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                <div>
+                                    <label class="block text-[10px] sm:text-[11px] font-bold text-gray-600 uppercase mb-1">Nama Bahan Baru <span class="text-rose-500">*</span></label>
+                                    <input type="text" id="specific_item" placeholder="Cth: Minyak Jelantah, Saus..." class="w-full px-3.5 py-2.5 rounded-xl bg-white text-xs sm:text-sm font-semibold text-[#111827] focus:ring-2 focus:ring-[#0B533E] outline-none">
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] sm:text-[11px] font-bold text-gray-600 uppercase mb-1">Harga Pokok / HPP per Kg (Rp) <span class="text-rose-500">*</span></label>
+                                    <input type="number" id="custom_hpp" placeholder="Cth: 18000" min="0" class="w-full px-3.5 py-2.5 rounded-xl bg-white text-xs sm:text-sm font-semibold text-[#111827] focus:ring-2 focus:ring-[#0B533E] outline-none">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Berat & Sumber Sampah -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5 sm:gap-4">
+                            <div>
+                                <label class="block text-[10px] sm:text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1">Berat Timbangan (Kg) <span class="text-rose-500">*</span></label>
+                                <div class="relative">
+                                    <input type="number" step="0.1" min="0.1" id="weight" placeholder="0.0" required class="w-full pl-3.5 pr-11 py-3 rounded-xl bg-[#F6F8F7] focus:bg-white focus:ring-2 focus:ring-[#0B533E] outline-none text-sm sm:text-base font-extrabold text-[#111827] transition">
+                                    <span class="absolute right-3.5 top-1/2 -translate-y-1/2 text-xs font-extrabold text-gray-400">KG</span>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-[10px] sm:text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1">Sumber Sisa Makanan <span class="text-rose-500">*</span></label>
+                                <select id="cause" onchange="updateLivePreview()" required class="w-full px-3.5 py-3 rounded-xl bg-[#F6F8F7] focus:bg-white focus:ring-2 focus:ring-[#0B533E] outline-none text-xs font-bold text-[#111827] transition">
+                                    <option value="Pre-consumer / Sisa Dapur">Sisa Dapur / Produksi (Rugi HPP)</option>
+                                    <option value="Sisa Pelanggan">Sisa Piring Pelanggan (Rp 0 Rugi)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Live Fintech Preview Card -->
+                        <div class="bg-[#0B533E] text-white rounded-xl p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
+                            <div>
+                                <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-200 block">Estimasi Kebocoran Modal (HPP)</span>
+                                <span id="preview-leakage" class="text-xl sm:text-2xl font-black text-white">Rp 0</span>
+                            </div>
+                            <div class="sm:text-right border-t sm:border-t-0 pt-2.5 sm:pt-0 border-white/15 w-full sm:w-auto">
+                                <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-200 block">Potensi Emisi Gas Metana</span>
+                                <span id="preview-emission" class="text-base sm:text-lg font-extrabold text-emerald-300">0.0 Kg CO₂e</span>
+                            </div>
+                        </div>
+
+                        <!-- Catatan & Foto Bukti -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5 sm:gap-4">
+                            <div>
+                                <label class="block text-[10px] sm:text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1">Catatan Penyebab (Opsional)</label>
+                                <input type="text" id="notes" placeholder="Cth: Sayur layu / nasi berlebih..." class="w-full px-3.5 py-3 rounded-xl bg-[#F6F8F7] focus:bg-white focus:ring-2 focus:ring-[#0B533E] outline-none text-xs font-medium text-[#111827] transition">
+                            </div>
+
+                            <div>
+                                <label class="block text-[10px] sm:text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1">Foto Bukti Timbangan</label>
+                                <input type="file" id="photo_picker" accept="image/*" class="w-full px-3 py-2 rounded-xl bg-[#F6F8F7] text-xs text-gray-600 file:mr-2.5 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-[11px] file:font-bold file:bg-[#ECFDF5] file:text-[#0B533E] cursor-pointer">
+                                <p id="compress_status" class="text-[10px] text-gray-400 mt-1">Otomatis dikompres agar ringan di browser.</p>
+                            </div>
+                        </div>
+
+                        <div class="pt-1">
+                            <button type="submit" class="w-full bg-[#0B533E] hover:bg-[#083F2F] text-white font-bold py-3.5 rounded-full transition flex items-center justify-center gap-2 text-xs sm:text-sm">
+                                <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+                                <span>Simpan Catatan ke Sistem</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- KANAN (4 Kolom): CLOSING TAMU HARIAN & INFO -->
+                <div class="lg:col-span-4 space-y-4 sm:space-y-6">
+                    
+                    <!-- Closing Tamu Card -->
+                    <div id="closing" class="bg-white rounded-2xl border border-gray-200/80 p-5 sm:p-6">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="w-10 h-10 rounded-xl bg-[#111827] text-white flex items-center justify-center shrink-0">
+                                <i data-lucide="users" class="w-4 h-4"></i>
+                            </div>
+                            <div>
+                                <span class="text-[10px] font-extrabold uppercase tracking-wider text-[#0B533E]">Step 2 | Tutup Toko</span>
+                                <h3 class="text-sm sm:text-base font-extrabold text-[#111827]">Closing Jumlah Tamu</h3>
+                            </div>
+                        </div>
+
+                        <p class="text-xs text-gray-500 leading-relaxed mb-4">
+                            Masukkan total pengunjung hari ini untuk menghitung rata-rata gram makanan tersisa per piring pelanggan.
+                        </p>
+
+                        <form onsubmit="handleSaveClosing(event)" class="space-y-3.5">
+                            <div>
+                                <label class="block text-[10px] sm:text-[11px] font-bold text-gray-500 uppercase mb-1">Total Pengunjung Hari Ini</label>
+                                <input type="number" id="total_customers" min="1" placeholder="Contoh: 155" required class="w-full px-3.5 py-3 rounded-xl bg-[#F6F8F7] focus:bg-white focus:ring-2 focus:ring-[#111827] outline-none text-sm sm:text-base font-extrabold text-[#111827] transition">
+                            </div>
+                            <button type="submit" class="w-full bg-[#111827] hover:bg-black text-white font-bold py-3 rounded-full transition text-xs flex items-center justify-center gap-1.5">
+                                <i data-lucide="calculator" class="w-4 h-4"></i> Hitung Rasio Sisa Piring
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Mini Info Card Hitam Karbon -->
+                    <div class="bg-[#111827] text-white rounded-2xl p-5 sm:p-6 space-y-2">
+                        <span class="text-[10px] font-extrabold uppercase tracking-wider text-emerald-400 block">Catatan Sistem</span>
+                        <h4 class="text-sm font-extrabold">Kenapa Sisa Piring Rp 0?</h4>
+                        <p class="text-xs text-gray-300 leading-relaxed">
+                            Makanan yang tersisa di piring tamu sudah lunas dibayar sehingga tidak dihitung sebagai kerugian HPP. Namun datanya tetap dipakai untuk mengevaluasi ukuran porsi menu Anda.
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script src="nomo-app.js"></script>
+    <script>
+        renderNomoShell('input');
+        let activeCatObj = null;
+        let compressedBase64 = null;
+
+        function renderCategoryPills() {
+            const state = getNomoData();
+            const grid = document.getElementById('category-pills-grid');
+
+            const items = [
+                ...state.categories.map(c => ({
+                    id: String(c.id),
+                    name: c.name,
+                    hpp: c.default_hpp,
+                    icon: c.icon || 'utensils',
+                    badge: 'bg-[#ECFDF5] text-[#0B533E]'
+                })),
+                { id: 'Campuran', name: 'Campuran', hpp: 0, icon: 'package-open', badge: 'bg-gray-200/70 text-[#111827]' },
+                { id: 'Lainnya', name: '+ Bahan Baru', hpp: 0, icon: 'plus', badge: 'bg-[#111827] text-white' }
+            ];
+
+            grid.innerHTML = items.map((item, idx) => `
+                <button type="button" onclick="selectCategory('${item.id}')" id="cat-pill-${item.id}" class="cat-pill text-left p-3 rounded-xl transition-all flex items-center sm:flex-col sm:items-start justify-start sm:justify-between gap-2.5 sm:gap-2 ${
+                    idx === 0 ? 'bg-[#ECFDF5] ring-2 ring-[#0B533E]' : 'bg-[#F6F8F7] hover:bg-gray-100/80'
+                }">
+                    <div class="w-8 h-8 rounded-lg ${item.badge} flex items-center justify-center shrink-0">
+                        <i data-lucide="${item.icon}" class="w-4 h-4"></i>
+                    </div>
+                    <div class="min-w-0 flex-1 w-full">
+                        <p class="text-xs font-extrabold text-[#111827] leading-tight truncate">${item.name}</p>
+                        <p class="text-[10px] font-semibold text-gray-500 mt-0.5 truncate">${item.id === 'Lainnya' ? 'Input manual' : 'Rp ' + formatRupiah(item.hpp) + '/Kg'}</p>
+                    </div>
+                </button>
+            `).join('');
+
+            lucide.createIcons();
+            if (items.length > 0) selectCategory(items[0].id);
+        }
+
+        function selectCategory(id) {
+            document.getElementById('selected_cat_id').value = id;
+            document.querySelectorAll('.cat-pill').forEach(btn => {
+                btn.classList.remove('bg-[#ECFDF5]', 'ring-2', 'ring-[#0B533E]');
+                btn.classList.add('bg-[#F6F8F7]');
+            });
+            const active = document.getElementById('cat-pill-' + id);
+            if (active) {
+                active.classList.remove('bg-[#F6F8F7]');
+                active.classList.add('bg-[#ECFDF5]', 'ring-2', 'ring-[#0B533E]');
+            }
+
+            const boxLainnya = document.getElementById('input_lainnya');
+            const specInp = document.getElementById('specific_item');
+            const hppInp = document.getElementById('custom_hpp');
+
+            if (id === 'Lainnya') {
+                boxLainnya.classList.remove('hidden');
+                specInp.required = true;
+                hppInp.required = true;
+                activeCatObj = { id: 'Lainnya', name: 'Lainnya', hpp: 0 };
+            } else {
+                boxLainnya.classList.add('hidden');
+                specInp.required = false;
+                hppInp.required = false;
+                if (id === 'Campuran') {
+                    activeCatObj = { id: 'Campuran', name: 'Campuran (Belum Dipilah)', hpp: 0 };
+                } else {
+                    const state = getNomoData();
+                    const found = state.categories.find(c => String(c.id) === String(id));
+                    activeCatObj = found ? { id: found.id, name: found.name, hpp: found.default_hpp } : { id, name: 'Bahan', hpp: 0 };
+                }
+            }
+            updateLivePreview();
+        }
+
+        function updateLivePreview() {
+            const weight = parseFloat(document.getElementById('weight').value) || 0;
+            const cause = document.getElementById('cause').value;
+            let hpp = activeCatObj ? activeCatObj.hpp : 0;
+            if (activeCatObj && activeCatObj.id === 'Lainnya') {
+                hpp = parseFloat(document.getElementById('custom_hpp').value) || 0;
+            }
+            const leakage = cause.includes('Pre-consumer') ? weight * hpp : 0;
+            const emission = weight * 1.5;
+
+            document.getElementById('preview-leakage').textContent = `Rp ${formatRupiah(leakage)}`;
+            document.getElementById('preview-emission').textContent = `${emission.toFixed(1)} Kg CO₂e`;
+        }
+
+        document.getElementById('weight').addEventListener('input', updateLivePreview);
+        document.getElementById('custom_hpp').addEventListener('input', updateLivePreview);
+
+        document.getElementById('photo_picker').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const status = document.getElementById('compress_status');
+            status.textContent = 'Mengompres foto...';
+            const reader = new FileReader();
+            reader.onload = ev => {
+                const img = new Image();
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    const maxDim = 480;
+                    let w = img.width, h = img.height;
+                    if (w > h && w > maxDim) { h = Math.round((h * maxDim) / w); w = maxDim; }
+                    else if (h > maxDim) { w = Math.round((w * maxDim) / h); h = maxDim; }
+                    canvas.width = w; canvas.height = h;
+                    canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+                    compressedBase64 = canvas.toDataURL('image/jpeg', 0.65);
+                    status.textContent = `Foto siap dilampirkan (${Math.round(compressedBase64.length / 1024)} KB).`;
+                };
+                img.src = ev.target.result;
+            };
+            reader.readAsDataURL(file);
+        });
+
+        function showToast(msg) {
+            const el = document.getElementById('toast-alert');
+            document.getElementById('toast-message').textContent = msg;
+            el.classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function handleSaveWaste(e) {
+            e.preventDefault();
+            const state = getNomoData();
+            const weight = parseFloat(document.getElementById('weight').value);
+            const cause = document.getElementById('cause').value;
+            const notes = document.getElementById('notes').value;
+
+            let catName = activeCatObj.name;
+            let hpp = activeCatObj.hpp;
+
+            if (activeCatObj.id === 'Lainnya') {
+                catName = document.getElementById('specific_item').value.trim();
+                hpp = parseFloat(document.getElementById('custom_hpp').value) || 0;
+                state.categories.push({
+                    id: Date.now(),
+                    name: catName,
+                    sub: 'Bahan Kustom Resto',
+                    parent_group: 'Lainnya',
+                    default_hpp: hpp,
+                    icon: 'layers',
+                    badge: 'bg-[#ECFDF5] text-[#0B533E]'
+                });
+            }
+
+            const leakage = cause.includes('Pre-consumer') ? Math.round(weight * hpp) : 0;
+            state.wastes.unshift({
+                id: Date.now(),
+                date: '2026-11-14',
+                time: new Date().toTimeString().slice(0, 5),
+                category: catName,
+                weight: weight,
+                cause: cause,
+                hpp: hpp,
+                profit_leakage: leakage,
+                notes: notes,
+                photo: compressedBase64
+            });
+
+            saveNomoData(state);
+            e.target.reset();
+            compressedBase64 = null;
+            renderCategoryPills();
+            showToast(`Tercatat ${weight} Kg (${catName}) | Kerugian HPP: Rp ${formatRupiah(leakage)}.`);
+        }
+
+        function handleSaveClosing(e) {
+            e.preventDefault();
+            const state = getNomoData();
+            const cust = parseInt(document.getElementById('total_customers').value, 10);
+            const idx = state.closings.findIndex(c => c.date === '2026-11-14');
+            if (idx >= 0) state.closings[idx].customers = cust;
+            else state.closings.push({ date: '2026-11-14', label: '14 Nov', customers: cust });
+            saveNomoData(state);
+            e.target.reset();
+            showToast(`Closing harian (${cust} tamu) tersimpan. Rasio sisa piring otomatis diperbarui!`);
+        }
+
+        renderCategoryPills();
+    </script>
+</body>
+</html>

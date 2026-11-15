@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biokonversi & Panen — NOMO (No More Waste)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    </style>
+</head>
+<body class="bg-[#F6F8F7] text-[#111827] pb-20 lg:pb-10 overflow-x-hidden">
+
+    <div class="flex flex-col lg:flex-row min-h-screen">
+        <!-- Sidebar & Mobile Header Mount -->
+        <div id="nomo-sidebar-mount"></div>
+
+        <!-- Main Content -->
+        <main class="flex-1 min-w-0 w-full max-w-6xl mx-auto px-3.5 sm:px-8 py-4 sm:py-6 space-y-4 sm:space-y-6">
+
+            <!-- Header -->
+            <header>
+                <p class="text-xs font-semibold text-gray-500">Produksi Sirkular Biopond</p>
+                <h1 class="text-base sm:text-2xl font-extrabold text-[#111827] tracking-tight">Biokonversi Maggot BSF & Kasgot</h1>
+            </header>
+
+            <!-- Toast -->
+            <div id="bio-toast" class="hidden bg-[#0B533E] text-white p-3.5 sm:px-5 rounded-2xl flex items-center gap-2.5">
+                <i data-lucide="check-circle-2" class="w-4 h-4 sm:w-5 sm:h-5 text-emerald-300 shrink-0"></i>
+                <p id="bio-toast-msg" class="text-xs sm:text-sm font-bold"></p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6">
+
+                <!-- KIRI (5 Kolom): Form Input Hasil Panen Biopond -->
+                <div class="lg:col-span-5 bg-white rounded-2xl border border-gray-200/80 p-5 sm:p-6 h-fit">
+                    <div class="mb-4">
+                        <span class="text-[10px] font-extrabold uppercase tracking-wider text-[#0B533E] block">Input Panen</span>
+                        <h2 class="text-sm sm:text-base font-extrabold text-[#111827] mt-1">Catat Hasil Biopond</h2>
+                        <p class="text-xs text-gray-500 mt-0.5">Rekam berat pakan masuk serta hasil panen larva segar & pupuk kasgot.</p>
+                    </div>
+
+                    <form onsubmit="handleSaveBioconv(event)" class="space-y-3.5">
+                        <div>
+                            <label class="block text-[10px] sm:text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1">Blok / Biopond</label>
+                            <select id="bio-pond" required class="w-full px-3.5 py-3 rounded-xl bg-[#F6F8F7] focus:bg-white text-xs font-extrabold text-[#111827] outline-none focus:ring-2 focus:ring-[#0B533E] transition">
+                                <option value="Biopond A1">Biopond A1 (Larva Fase Pembesaran)</option>
+                                <option value="Biopond A2">Biopond A2 (Larva Fase Pembesaran)</option>
+                                <option value="Biopond B1">Biopond B1 (Panen Pre-Pupa)</option>
+                                <option value="Biopond B2">Biopond B2 (Kandang Utama)</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-[10px] sm:text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1">Pakan Organik Masuk (Kg)</label>
+                            <input type="number" step="0.1" min="0.5" id="bio-feed" placeholder="0.0" required class="w-full px-3.5 py-3 rounded-xl bg-[#F6F8F7] focus:bg-white focus:ring-2 focus:ring-[#0B533E] outline-none text-sm font-extrabold text-[#111827] transition">
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-[10px] sm:text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1">Fresh Maggot (Kg)</label>
+                                <input type="number" step="0.1" min="0" id="bio-maggot" placeholder="0.0" required class="w-full px-3.5 py-3 rounded-xl bg-[#F6F8F7] focus:bg-white focus:ring-2 focus:ring-[#0B533E] outline-none text-sm font-extrabold text-[#111827] transition">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] sm:text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1">Pupuk Kasgot (Kg)</label>
+                                <input type="number" step="0.1" min="0" id="bio-kasgot" placeholder="0.0" required class="w-full px-3.5 py-3 rounded-xl bg-[#F6F8F7] focus:bg-white focus:ring-2 focus:ring-[#0B533E] outline-none text-sm font-extrabold text-[#111827] transition">
+                            </div>
+                        </div>
+
+                        <!-- Live Preview Estimasi Nilai -->
+                        <div class="bg-[#0B533E] text-white rounded-xl p-4 flex items-center justify-between gap-2">
+                            <div>
+                                <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-200 block">Estimasi Nilai Ekonomi</span>
+                                <span id="bio-preview-rp" class="text-lg font-black">Rp 0</span>
+                            </div>
+                            <div class="text-right">
+                                <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-200 block">Rasio Konversi</span>
+                                <span id="bio-preview-rate" class="text-sm font-extrabold text-emerald-300">0%</span>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-[10px] sm:text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1">Catatan Batch (Opsional)</label>
+                            <input type="text" id="bio-notes" placeholder="Cth: Suhu kandang normal, pakan protein dominan..." class="w-full px-3.5 py-3 rounded-xl bg-[#F6F8F7] focus:bg-white focus:ring-2 focus:ring-[#0B533E] outline-none text-xs font-medium text-[#111827] transition">
+                        </div>
+
+                        <button type="submit" class="w-full bg-[#111827] hover:bg-black text-white font-bold py-3.5 rounded-full transition flex items-center justify-center gap-1.5 text-xs">
+                            <i data-lucide="plus-circle" class="w-4 h-4"></i> Simpan Hasil Panen
+                        </button>
+                    </form>
+                </div>
+
+                <!-- KANAN (7 Kolom): Riwayat Batch Biokonversi -->
+                <div class="lg:col-span-7 bg-white rounded-2xl border border-gray-200/80 p-5 sm:p-6">
+                    <div class="pb-3.5 border-b border-gray-100 mb-1">
+                        <h2 class="text-sm sm:text-base font-extrabold text-[#111827]">Riwayat Batch Biokonversi</h2>
+                        <p class="text-xs text-gray-500">Acuan nilai: Maggot Rp 8.000/Kg | Kasgot Rp 2.500/Kg</p>
+                    </div>
+
+                    <div id="bioconv-list" class="divide-y divide-gray-100"></div>
+                </div>
+
+            </div>
+
+        </main>
+    </div>
+
+    <script src="nomo-app.js"></script>
+    <script>
+        renderMaggotShell('maggot-production');
+
+        function updateBioPreview() {
+            const feed = parseFloat(document.getElementById('bio-feed').value) || 0;
+            const maggot = parseFloat(document.getElementById('bio-maggot').value) || 0;
+            const kasgot = parseFloat(document.getElementById('bio-kasgot').value) || 0;
+
+            const estVal = (maggot * 8000) + (kasgot * 2500);
+            const rate = feed > 0 ? Math.round((maggot / feed) * 100) : 0;
+
+            document.getElementById('bio-preview-rp').textContent = `Rp ${formatRupiah(estVal)}`;
+            document.getElementById('bio-preview-rate').textContent = `${rate}% Maggot`;
+        }
+
+        document.getElementById('bio-feed').addEventListener('input', updateBioPreview);
+        document.getElementById('bio-maggot').addEventListener('input', updateBioPreview);
+        document.getElementById('bio-kasgot').addEventListener('input', updateBioPreview);
+
+        function renderBioconvList() {
+            const m = getMaggotMetrics();
+            const listEl = document.getElementById('bioconv-list');
+
+            listEl.innerHTML = m.data.bioconversions.map(b => {
+                const valRp = (Number(b.freshMaggotKg) * 8000) + (Number(b.kasgotKg) * 2500);
+                const convPct = b.feedInputKg > 0 ? Math.round((b.freshMaggotKg / b.feedInputKg) * 100) : 0;
+                return `
+                <div class="py-3.5 flex items-center justify-between gap-3">
+                    <div class="flex items-start gap-3 min-w-0">
+                        <div class="w-9 h-9 rounded-xl bg-[#ECFDF5] text-[#0B533E] flex items-center justify-center shrink-0">
+                            <i data-lucide="sprout" class="w-4 h-4"></i>
+                        </div>
+                        <div class="min-w-0">
+                            <div class="flex flex-wrap items-center gap-1.5">
+                                <p class="text-xs sm:text-sm font-extrabold text-[#111827]">${b.biopond}</p>
+                                <span class="px-2 py-0.5 rounded-md bg-[#111827] text-white text-[9px] font-extrabold">${convPct}% Rasio</span>
+                            </div>
+                            <p class="text-[11px] text-gray-600 mt-0.5">
+                                Pakan <strong>${Number(b.feedInputKg).toFixed(1)} Kg</strong> → Maggot <strong>${Number(b.freshMaggotKg).toFixed(1)} Kg</strong> + Kasgot <strong>${Number(b.kasgotKg).toFixed(1)} Kg</strong>
+                            </p>
+                            <p class="text-[10px] text-gray-400 mt-0.5">${b.date} | ${b.notes || 'Tercatat'}</p>
+                        </div>
+                    </div>
+
+                    <div class="text-right shrink-0">
+                        <p class="text-xs sm:text-sm font-extrabold text-[#0B533E]">Rp ${formatRupiah(valRp)}</p>
+                        <button onclick="deleteBioconv('${b.id}')" class="text-[10px] text-gray-400 hover:text-rose-600 mt-0.5">Hapus</button>
+                    </div>
+                </div>`;
+            }).join('');
+
+            lucide.createIcons();
+        }
+
+        function handleSaveBioconv(e) {
+            e.preventDefault();
+            const state = getNomoData();
+            const pond = document.getElementById('bio-pond').value;
+            const feed = parseFloat(document.getElementById('bio-feed').value);
+            const maggot = parseFloat(document.getElementById('bio-maggot').value);
+            const kasgot = parseFloat(document.getElementById('bio-kasgot').value);
+            const notes = document.getElementById('bio-notes').value;
+
+            state.bioconversions.unshift({
+                id: 'BIO-' + Date.now(),
+                date: '14 Nov 2026',
+                biopond: pond,
+                feedInputKg: feed,
+                freshMaggotKg: maggot,
+                kasgotKg: kasgot,
+                notes: notes
+            });
+
+            saveNomoData(state);
+            e.target.reset();
+            updateBioPreview();
+            renderBioconvList();
+
+            const toast = document.getElementById('bio-toast');
+            document.getElementById('bio-toast-msg').textContent = `Panen ${pond} (${maggot} Kg Maggot + ${kasgot} Kg Kasgot) berhasil disimpan!`;
+            toast.classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function deleteBioconv(id) {
+            const state = getNomoData();
+            state.bioconversions = state.bioconversions.filter(b => b.id !== id);
+            saveNomoData(state);
+            renderBioconvList();
+        }
+
+        renderBioconvList();
+    </script>
+</body>
+</html>
